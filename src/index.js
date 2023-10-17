@@ -10,18 +10,8 @@ const { TOKEN } = process.env;
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 // Load database
-const sequelize = require('./database/connect');
-const modelsPath = path.join(__dirname, 'database/models');
-const modelFiles = fs.readdirSync(modelsPath).filter(file => file.endsWith('.js'));
-
-for (const file of modelFiles) {
-	const filePath = path.join(modelsPath, file);
-	const { name, schema } = require(filePath);
-	const model = sequelize.define(name, schema);
-	model.sync({ alter: true });
-	console.debug(`Synced ${file}`);
-}
-console.log('Updated database schemas!');
+const Database = require('./database/connection');
+Database.sync();
 
 // Load commands
 client.commands = new Collection();
