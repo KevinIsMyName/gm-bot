@@ -1,4 +1,3 @@
-// Require config
 require('dotenv').config();
 const fs = require('node:fs');
 const path = require('node:path');
@@ -9,6 +8,20 @@ const { TOKEN } = process.env;
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+// Load database
+const sequelize = require('./database/connect');
+const modelsPath = path.join(__dirname, 'database/models');
+const modelFiles = fs.readdirSync(modelsPath).filter(file => file.endsWith('.js'));
+
+for (const file of modelFiles) {
+	const filePath = path.join(modelsPath, file);
+	const { name, schema } = require(filePath);
+	const model = sequelize.define(name, schema);
+	model.sync({ alter: true });
+	console.debug(`Synced ${file}`);
+}
+console.log('Updated database schemas!');
 
 // Load commands
 client.commands = new Collection();
