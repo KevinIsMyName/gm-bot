@@ -2,6 +2,10 @@
   "name": "gm-bot",
   "version": "1.0.0",
   "main": "src/index.js",
+  "scripts": {
+    "prestart": "node src/deploy-commands.js",
+    "start": "node src/index.js"
+  },
   "repository": "https://github.com/KevinIsMyName/gm-bot",
   "author": "KevinIsMyName <wu.kevin.2520@gmail.com>",
   "license": "MIT",
