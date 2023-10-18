@@ -1,5 +1,14 @@
 const Database = require('./database/connection');
 
+function oneDayAfterAnother(timestamp1, timestamp2) {
+	
+}
+
+function sameDay(timestamp1, timestamp2) {
+
+}
+
+
 class Streak {
 	constructor(discordInteraction) {
 		this.discordInteraction = discordInteraction;
@@ -10,8 +19,14 @@ class Streak {
 	async processMessage() {
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
 		const currentTimestamp = this.discordInteraction.createdTimestamp;
-		if (this.timestampsWithinOneDay(lastTimestamp, currentTimestamp)) {
-			return;
+		if (this.withinOneDay(lastTimestamp, currentTimestamp)) {
+			this.increment();
+			return '☀';
+		} else if (this.sameDay(lastTimestamp, currentTimestamp)) {
+			await Database.addStreakMessage(this.userId, this.discordInteraction.content, this.discordInteraction.createdTimestamp);
+			return '😴';
+		} else {
+			return '🌞';
 		}
 	}
 
@@ -49,9 +64,7 @@ class Streak {
 		await Database.bulkUpdateStreakCounters(bulkUpdateRows);
 	}
 
-	timestampsWithinOneDay(timestamp1, timestamp2) {
-		return;
-	}
+
 }
 
 module.exports = Streak;
