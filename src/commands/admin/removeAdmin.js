@@ -4,7 +4,7 @@ const Database = require('../../database/connection');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('remove-admin')
-		.setDescription('Remove admin user')
+		.setDescription('Remove user from admin')
 		.addUserOption(option =>
 			option.setName('user')
 				.setDescription('User who will no longer be admin')
@@ -15,8 +15,12 @@ module.exports = {
 		const removeAdminUsername = interaction.options.getUser('user').username;
 		try {
 			if (await Database.isAdmin(existingAdminUid)) {
-				await Database.removeAdmin({ removeAdminUid: removeAdminUid, existingAdminUid: existingAdminUid });
-				await interaction.reply(`Successfully removed ${removeAdminUsername} from admin`, { ephemerel: true });
+				if (await Database.isAdmin(removeAdminUid)) {
+					await Database.removeAdmin({ removeAdminUid: removeAdminUid, existingAdminUid: existingAdminUid });
+					await interaction.reply(`Successfully removed ${removeAdminUsername} from admin`, { ephemerel: true });
+				} else {
+					await interaction.reply(`${removeAdminUsername} was not an admin to begin with`, { ephemerel: true });
+				}
 			} else {
 				await interaction.reply('You must be an admin to remove other admins', { ephemeral: true });
 			}

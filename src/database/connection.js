@@ -72,6 +72,7 @@ class Database {
 				uid: args.newAdminUid,
 				addedBy: args.existingAdminUid,
 			});
+			console.log(`Added ${args.newAdminUid} to admin`);
 		} catch (error) {
 			if (error.name === 'SequelizeUniqueConstraintError') {
 				return Error('That tag already exists.');
@@ -85,8 +86,8 @@ class Database {
 		try {
 			await Admins.destroy({
 				uid: args.removeAdminUid,
-				addedBy: args.existingAdminUid,
 			});
+			console.log(`Removed ${args.removeAdminUid} from admin`);
 		} catch (error) {
 			return Error(`Something went wrong with removing admin.uid=${args.removeAdminUid}.`);
 		}

@@ -4,7 +4,7 @@ const Database = require('../../database/connection');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('add-admin')
-		.setDescription('Add admin to user')
+		.setDescription('Add user to admin')
 		.addUserOption(option =>
 			option.setName('user')
 				.setDescription('User who will become admin')
@@ -15,8 +15,12 @@ module.exports = {
 		const newAdminUsername = interaction.options.getUser('user').username;
 		try {
 			if (await Database.isAdmin(existingAdminUid)) {
-				await Database.addAdmin({ newAdminUid: newAdminUid, existingAdminUid: existingAdminUid });
-				await interaction.reply(`Successfully added ${newAdminUsername} as admin`, { ephemerel: true });
+				if (await Database.isAdmin(newAdminUid)) {
+					await Database.addAdmin({ newAdminUid: newAdminUid, existingAdminUid: existingAdminUid });
+					await interaction.reply(`Successfully added ${newAdminUsername} as admin`, { ephemerel: true });
+				} else {
+					await interaction.reply(`${newAdminUsername} is already an admin`, { ephemerel: true });
+				}
 			} else {
 				await interaction.reply('You must be an admin to add other admins', { ephemeral: true });
 			}
