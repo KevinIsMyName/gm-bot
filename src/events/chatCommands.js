@@ -11,10 +11,7 @@ module.exports = {
 		// Ignore reading bot's own messages
 		if (interaction.author.id === interaction.client.user.id) return;
 
-		// Ignore messages that are not prefixed (this also catches non-text messages)
-		const messageContent = interaction.content;
-		if (messageContent.length < prefix.length && messageContent.substr(0, prefix.length)) return;
-
+		// Process streak messages messages
 		for (const args of regexArgs) {
 			const [ re, mode ] = args;
 			const pattern = new RegExp(re, mode);
@@ -22,8 +19,21 @@ module.exports = {
 				const streak = new Streak(interaction);
 				await streak.init();
 				await streak.processMessage();
-				break;
+				return;
 			}
 		}
+
+		// Ignore messages that are not prefixed
+		const messageContent = interaction.content;
+		if (messageContent.length < prefix.length && messageContent.substr(0, prefix.length) != prefix) return;
+
+		const command = messageContent.susbtr(prefix.length, messageContent.length);
+		switch (command) {
+			case 'leaderboard':
+				break;
+			case 'current':
+				break;
+		}
+
 	},
 };
