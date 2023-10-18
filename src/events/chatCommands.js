@@ -19,10 +19,9 @@ module.exports = {
 			const [ re, mode ] = args;
 			const pattern = new RegExp(re, mode);
 			if (messageContent.match(pattern)) {
-				// Tally streak for user
-				const userId = interaction.author.id;
 				const streak = new Streak(interaction);
 				await streak.init();
+				await streak.processMessage();
 				break;
 			}
 		}

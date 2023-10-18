@@ -3,15 +3,21 @@ const Database = require('./database/connection');
 class Streak {
 	constructor(discordInteraction) {
 		this.discordInteraction = discordInteraction;
-		this.username = discordInteraction.user.username;
-		this.userId = discordInteraction.content.user.id;
+		this.username = discordInteraction.author.username;
+		this.userId = discordInteraction.author.id;
 	}
 
-	async increment(discordInteraction) {
-		if (this.userId != discordInteraction.author.id) throw new Error('Attempted to increment with a different user\'s message');
+	async processMessage() {
+		const lastTimestamp = await Database.getLastTimestamp(this.userId);
+		const currentTimestamp = this.discordInteraction.createdTimestamp;
+		if (this.timestampsWithinOneDay(lastTimestamp, currentTimestamp)) {
+			return;
+		}
+	}
 
+	async increment() {
 		await Database.incrementStreakCounter(this.userId);
-		await Database.addStreakMessage(this.userId, discordInteraction.content, discordInteraction.createdTimestamp);
+		await Database.addStreakMessage(this.userId, this.discordInteraction.content, this.discordInteraction.createdTimestamp);
 	}
 
 	async reset() {
@@ -41,6 +47,10 @@ class Streak {
 			bulkUpdateRows.push({ userId: userId, awaitingRevive: true });
 		}
 		await Database.bulkUpdateStreakCounters(bulkUpdateRows);
+	}
+
+	timestampsWithinOneDay(timestamp1, timestamp2) {
+		return;
 	}
 }
 
