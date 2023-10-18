@@ -10,6 +10,11 @@ module.exports = {
 		},
 		numberOfDays: {
 			type: Sequelize.INTEGER,
+			defaultValue: 0,
+		},
+		awaitingRevive: {
+			type: Sequelize.BOOLEAN,
+			defaultValue: false,
 		},
 	},
 };

@@ -104,21 +104,21 @@ class Database {
 	static async getStreakCounter(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const counter = await Counters.findAll({
+			const results = await Counters.findOne({
 				where: {
 					userId: userId,
 				},
 			});
-			return (counter.length !== 0) ? counter[0].numberOfDays : 0;
+			return results;
 		} catch (error) {
 			return Error(`Something went wrong with getting streak_counters.userId=${userId}.`);
 		}
 	}
 
-	static async getLastStreakMessage(userId) {
+	static async getLastTimestamp(userId) {
 		const Messages = Database.getStreakMessagesTable();
 		try {
-			const messages = await Messages.findOne(
+			const result = await Messages.findOne(
 				{
 					where: {
 						userId: userId,
@@ -129,7 +129,7 @@ class Database {
 				},
 			);
 			console.log('do nothing');
-			return messages.timestamp;
+			return result.timestamp;
 		} catch {
 			return Error(`Something went wrong with getting streak_messages.userId=${userId}.`);
 		}

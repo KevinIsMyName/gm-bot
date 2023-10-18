@@ -1,15 +1,11 @@
 const Database = require('./database/connection');
 
 class Streak {
-
 	constructor(userId) {
 		this.userId = userId;
 		this.counter = null;
-		this.alive = false;
-	}
-
-	isAlive() {
-		return this.alive;
+		this.lastTimestamp = null;
+		this.awaitingRevive = null;
 	}
 
 	increment() {
@@ -25,17 +21,19 @@ class Streak {
 	}
 
 	async init() {
-		// Update streak counter
 		const result = await Database.getStreakCounter(this.userId);
-		this.counter = result;
-
-		// Update streak alive status
-		const lastStreakMessageTimestamp = await Database.getLastStreakMessage(this.userId);
-		this.lastTimestamp = lastStreakMessageTimestamp;
+		if (result) {
+			this.counter = result.numberOfDays;
+			this.awaitingRevive = result.awaitingRevive;
+		} else {
+			this.counter = 0;
+			this.awaitingRevive = false;
+		}
+		this.lastTimestamp = await Database.getStreakLastTimestamp(this.userId);
 	}
 
-	revive() {
-		this.alive = true;
+	async revive() {
+		await Database.reviveStreak(this.userId);
 	}
 }
 
