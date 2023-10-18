@@ -39,10 +39,12 @@ class Database {
 		const modelsPath = path.join(__dirname, 'models');
 		const modelFiles = fs.readdirSync(modelsPath).filter(file => file.endsWith('.js'));
 
+		this.schemas = {};
 		for (const file of modelFiles) {
 			const filePath = path.join(modelsPath, file);
 			const { name, schema } = require(filePath);
 			const model = Database.connection.define(name, schema);
+			this.schemas[name] = model;
 			console.debug(`Synced ${file}`);
 		}
 		Database.connection.sync({ alter: true });
@@ -50,15 +52,11 @@ class Database {
 	}
 
 	static getAdminTable() {
-		const { name, schema } = require(path.join(__dirname, 'models', 'admins'));
-		const Admins = Database.connection.define(name, schema);
-		return Admins;
+		return this.schemas['admins'];
 	}
 
 	static getStreakCounterTable() {
-		const { name, schema } = require(path.join(__dirname, 'models', 'streakCounters'));
-		const Counters = Database.connection.define(name, schema);
-		return Counters;
+		return this.schemas['streak_counters'];
 	}
 
 	static async isAdmin(userId) {
@@ -68,7 +66,7 @@ class Database {
 				userId: userId,
 			},
 		});
-		return count > 0 ? true : false;
+		return count > 0;
 	}
 
 	static async addAdmin(args) {

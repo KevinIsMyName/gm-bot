@@ -23,10 +23,10 @@ module.exports = {
 		try {
 			if (await Database.isAdmin(existingAdminUserId)) {
 				if (await Database.isAdmin(newAdminUserId)) {
+					await interaction.reply(`${newAdminUsername} is already an admin`, { ephemerel: true });
+				} else {
 					await Database.addAdmin({ newAdminUserId: newAdminUserId, existingAdminUserId: existingAdminUserId });
 					await interaction.reply(`Successfully added ${newAdminUsername} as admin`, { ephemerel: true });
-				} else {
-					await interaction.reply(`${newAdminUsername} is already an admin`, { ephemerel: true });
 				}
 			} else {
 				await interaction.reply('You must be an admin to add other admins', { ephemeral: true });
