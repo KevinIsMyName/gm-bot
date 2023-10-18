@@ -9,7 +9,7 @@ module.exports = {
 			allowNull: false,
 		},
 		addedBy: {
-			type: Sequelize.INTEGER,
+			type: Sequelize.STRING,
 			defaultValue: 0,
 		},
 	},
