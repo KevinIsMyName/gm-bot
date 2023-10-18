@@ -4,5 +4,10 @@
     "guildId": "your-guild-id-here",
     "channelId": [
         "your-channel-ids-here"
+    ],
+    "prefix": "your-prefix-here",
+    "regexArgs": [
+        ["your-regex-matcher-here", "g"],
+        ["your-regex-matcher-here", "im"]
     ]
 }
