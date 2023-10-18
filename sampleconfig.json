@@ -1,0 +1,8 @@
+{
+    "token": "your-token-here",
+    "clientId": "your-client-id-here",
+    "guildId": "your-guild-id-here",
+    "channelId": [
+        "your-channel-ids-here"
+    ]
+}
