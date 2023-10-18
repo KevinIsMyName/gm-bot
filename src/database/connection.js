@@ -55,9 +55,9 @@ class Database {
 		return Admins;
 	}
 
-	static isAdmin(uid) {
+	static async isAdmin(uid) {
 		const Admins = Database.getAdminTable();
-		const count = Admins.count({
+		const count = await Admins.count({
 			where: {
 				uid: uid,
 			},
@@ -76,7 +76,19 @@ class Database {
 			if (error.name === 'SequelizeUniqueConstraintError') {
 				return Error('That tag already exists.');
 			}
-			return Error('Something went wrong with adding a tag.');
+			return Error(`Something went wrong with adding admin.uid=${args.newAdminUid}.`);
+		}
+	}
+
+	static async removeAdmin(args) {
+		const Admins = Database.getAdminTable();
+		try {
+			await Admins.destroy({
+				uid: args.removeAdminUid,
+				addedBy: args.existingAdminUid,
+			});
+		} catch (error) {
+			return Error(`Something went wrong with removing admin.uid=${args.removeAdminUid}.`);
 		}
 	}
 
