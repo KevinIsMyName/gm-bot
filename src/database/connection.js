@@ -55,6 +55,12 @@ class Database {
 		return Admins;
 	}
 
+	static getStreakCounterTable() {
+		const { name, schema } = require(path.join(__dirname, 'models', 'streakCounters'));
+		const Counters = Database.connection.define(name, schema);
+		return Counters;
+	}
+
 	static async isAdmin(userId) {
 		const Admins = Database.getAdminTable();
 		const count = await Admins.count({
@@ -75,7 +81,7 @@ class Database {
 			console.log(`Added ${args.newAdminUserId} to admin`);
 		} catch (error) {
 			if (error.name === 'SequelizeUniqueConstraintError') {
-				return Error('That tag already exists.');
+				return Error('Admin already exists.');
 			}
 			return Error(`Something went wrong with adding admin.userId=${args.newAdminUserId}.`);
 		}
@@ -93,6 +99,20 @@ class Database {
 		}
 	}
 
+	static async getStreakCounter(userId) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			const counter = await Counters.findAll({
+				where: {
+					userId: userId,
+				},
+			});
+			return (counter.length !== 0) ? counter[0].numberOfDays : 0;
+		} catch (error) {
+			return Error(`Something went wrong with getting streak_countesr.userId=${userId}.`);
+		}
+	}
+
 	static async close() {
 		if (Database.#connection === null) {
 			await Database.#connection.close();
@@ -101,6 +121,6 @@ class Database {
 			console.log('Connection is already closed');
 		}
 	}
-
 }
+
 module.exports = Database;

@@ -1,6 +1,6 @@
 const { Events } = require('discord.js');
 const { channelIds, prefix, regexArgs } = require('../../config.json');
-
+const Streak = require('../streak');
 
 module.exports = {
 	name: Events.MessageCreate,
@@ -20,6 +20,9 @@ module.exports = {
 			const pattern = new RegExp(re, mode);
 			if (messageContent.match(pattern)) {
 				// Tally streak for user
+				const userId = interaction.author.id;
+				const streak = new Streak(userId);
+				await streak.init();
 				break;
 			}
 		}
