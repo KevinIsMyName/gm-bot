@@ -13,6 +13,13 @@ module.exports = {
 		const existingAdminUid = interaction.user.id;
 		const removeAdminUid = interaction.options.getUser('user').id;
 		const removeAdminUsername = interaction.options.getUser('user').username;
+
+		// Disallow targeting self
+		if (existingAdminUid === removeAdminUid) {
+			await interaction.reply('Did you mean to remove yourself from admin? I don\'t think so...try asking another admin to do it for you 🤔', { ephemeral : true });
+			return;
+		}
+
 		try {
 			if (await Database.isAdmin(existingAdminUid)) {
 				if (await Database.isAdmin(removeAdminUid)) {

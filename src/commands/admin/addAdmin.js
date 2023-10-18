@@ -13,6 +13,13 @@ module.exports = {
 		const existingAdminUid = interaction.user.id;
 		const newAdminUid = interaction.options.getUser('user').id;
 		const newAdminUsername = interaction.options.getUser('user').username;
+
+		// Disallow targeting self
+		if (existingAdminUid === newAdminUid) {
+			await interaction.reply('Nice try! 😒', { ephemeral: true });
+			return;
+		}
+
 		try {
 			if (await Database.isAdmin(existingAdminUid)) {
 				if (await Database.isAdmin(newAdminUid)) {
