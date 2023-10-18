@@ -30,7 +30,8 @@ class Streak {
 		this.counter = result;
 
 		// Update streak alive status
-		const lastStreakMessage = await Database.getLastStreakMessage(this.userId);
+		const lastStreakMessageTimestamp = await Database.getLastStreakMessage(this.userId);
+		this.lastTimestamp = lastStreakMessageTimestamp;
 	}
 
 	revive() {

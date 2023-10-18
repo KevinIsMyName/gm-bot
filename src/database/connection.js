@@ -59,6 +59,10 @@ class Database {
 		return this.schemas['streak_counters'];
 	}
 
+	static getStreakMessagesTable() {
+		return this.schemas['streak_messages'];
+	}
+
 	static async isAdmin(userId) {
 		const Admins = Database.getAdminTable();
 		const count = await Admins.count({
@@ -107,7 +111,27 @@ class Database {
 			});
 			return (counter.length !== 0) ? counter[0].numberOfDays : 0;
 		} catch (error) {
-			return Error(`Something went wrong with getting streak_countesr.userId=${userId}.`);
+			return Error(`Something went wrong with getting streak_counters.userId=${userId}.`);
+		}
+	}
+
+	static async getLastStreakMessage(userId) {
+		const Messages = Database.getStreakMessagesTable();
+		try {
+			const messages = await Messages.findOne(
+				{
+					where: {
+						userId: userId,
+					},
+					order: [
+						['timestamp', 'desc'],
+					],
+				},
+			);
+			console.log('do nothing');
+			return messages.timestamp;
+		} catch {
+			return Error(`Something went wrong with getting streak_messages.userId=${userId}.`);
 		}
 	}
 
