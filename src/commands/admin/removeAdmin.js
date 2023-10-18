@@ -10,20 +10,20 @@ module.exports = {
 				.setDescription('User who will no longer be admin')
 				.setRequired(true)),
 	async execute(interaction) {
-		const existingAdminUid = interaction.user.id;
-		const removeAdminUid = interaction.options.getUser('user').id;
+		const existingAdminUserId = interaction.user.id;
+		const removeAdminUserId = interaction.options.getUser('user').id;
 		const removeAdminUsername = interaction.options.getUser('user').username;
 
 		// Disallow targeting self
-		if (existingAdminUid === removeAdminUid) {
+		if (existingAdminUserId === removeAdminUserId) {
 			await interaction.reply('Did you mean to remove yourself from admin? I don\'t think so...try asking another admin to do it for you 🤔', { ephemeral : true });
 			return;
 		}
 
 		try {
-			if (await Database.isAdmin(existingAdminUid)) {
-				if (await Database.isAdmin(removeAdminUid)) {
-					await Database.removeAdmin({ removeAdminUid: removeAdminUid, existingAdminUid: existingAdminUid });
+			if (await Database.isAdmin(existingAdminUserId)) {
+				if (await Database.isAdmin(removeAdminUserId)) {
+					await Database.removeAdmin({ removeAdminUserId: removeAdminUserId, existingAdminUserId: existingAdminUserId });
 					await interaction.reply(`Successfully removed ${removeAdminUsername} from admin`, { ephemerel: true });
 				} else {
 					await interaction.reply(`${removeAdminUsername} was not an admin to begin with`, { ephemerel: true });

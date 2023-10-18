@@ -55,11 +55,11 @@ class Database {
 		return Admins;
 	}
 
-	static async isAdmin(uid) {
+	static async isAdmin(userId) {
 		const Admins = Database.getAdminTable();
 		const count = await Admins.count({
 			where: {
-				uid: uid,
+				userId: userId,
 			},
 		});
 		return count > 0 ? true : false;
@@ -69,15 +69,15 @@ class Database {
 		const Admins = Database.getAdminTable();
 		try {
 			await Admins.create({
-				uid: args.newAdminUid,
-				addedBy: args.existingAdminUid,
+				userId: args.newAdminUserId,
+				addedBy: args.existingAdminUserId,
 			});
-			console.log(`Added ${args.newAdminUid} to admin`);
+			console.log(`Added ${args.newAdminUserId} to admin`);
 		} catch (error) {
 			if (error.name === 'SequelizeUniqueConstraintError') {
 				return Error('That tag already exists.');
 			}
-			return Error(`Something went wrong with adding admin.uid=${args.newAdminUid}.`);
+			return Error(`Something went wrong with adding admin.userId=${args.newAdminUserId}.`);
 		}
 	}
 
@@ -85,11 +85,11 @@ class Database {
 		const Admins = Database.getAdminTable();
 		try {
 			await Admins.destroy({
-				uid: args.removeAdminUid,
+				userId: args.removeAdminUserId,
 			});
-			console.log(`Removed ${args.removeAdminUid} from admin`);
+			console.log(`Removed ${args.removeAdminUserId} from admin`);
 		} catch (error) {
-			return Error(`Something went wrong with removing admin.uid=${args.removeAdminUid}.`);
+			return Error(`Something went wrong with removing admin.userId=${args.removeAdminUserId}.`);
 		}
 	}
 

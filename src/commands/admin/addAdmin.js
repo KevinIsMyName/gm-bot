@@ -10,20 +10,20 @@ module.exports = {
 				.setDescription('User who will become admin')
 				.setRequired(true)),
 	async execute(interaction) {
-		const existingAdminUid = interaction.user.id;
-		const newAdminUid = interaction.options.getUser('user').id;
+		const existingAdminUserId = interaction.user.id;
+		const newAdminUserId = interaction.options.getUser('user').id;
 		const newAdminUsername = interaction.options.getUser('user').username;
 
 		// Disallow targeting self
-		if (existingAdminUid === newAdminUid) {
+		if (existingAdminUserId === newAdminUserId) {
 			await interaction.reply('Nice try! 😒', { ephemeral: true });
 			return;
 		}
 
 		try {
-			if (await Database.isAdmin(existingAdminUid)) {
-				if (await Database.isAdmin(newAdminUid)) {
-					await Database.addAdmin({ newAdminUid: newAdminUid, existingAdminUid: existingAdminUid });
+			if (await Database.isAdmin(existingAdminUserId)) {
+				if (await Database.isAdmin(newAdminUserId)) {
+					await Database.addAdmin({ newAdminUserId: newAdminUserId, existingAdminUserId: existingAdminUserId });
 					await interaction.reply(`Successfully added ${newAdminUsername} as admin`, { ephemerel: true });
 				} else {
 					await interaction.reply(`${newAdminUsername} is already an admin`, { ephemerel: true });

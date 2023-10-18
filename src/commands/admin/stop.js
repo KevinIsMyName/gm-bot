@@ -6,9 +6,9 @@ module.exports = {
 		.setName('stop')
 		.setDescription('Stops the bot'),
 	async execute(interaction) {
-		const existingAdminUid = interaction.user.id;
+		const existingAdminUserId = interaction.user.id;
 		try {
-			if (await Database.isAdmin(existingAdminUid)) {
+			if (await Database.isAdmin(existingAdminUserId)) {
 				await interaction.reply('Good night 😴');
 				console.log('Received stop command');
 				process.exit(0);
