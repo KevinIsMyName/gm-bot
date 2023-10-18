@@ -49,6 +49,37 @@ class Database {
 		console.log('Updated database schemas!');
 	}
 
+	static getAdminTable() {
+		const { name, schema } = require(path.join(__dirname, 'models', 'admins'));
+		const Admins = Database.connection.define(name, schema);
+		return Admins;
+	}
+
+	static isAdmin(uid) {
+		const Admins = Database.getAdminTable();
+		const count = Admins.count({
+			where: {
+				uid: uid,
+			},
+		});
+		return count > 0 ? true : false;
+	}
+
+	static async addAdmin(args) {
+		const Admins = Database.getAdminTable();
+		try {
+			await Admins.create({
+				uid: args.newAdminUid,
+				addedBy: args.existingAdminUid,
+			});
+		} catch (error) {
+			if (error.name === 'SequelizeUniqueConstraintError') {
+				return Error('That tag already exists.');
+			}
+			return Error('Something went wrong with adding a tag.');
+		}
+	}
+
 	static async close() {
 		if (Database.#connection === null) {
 			await Database.#connection.close();
