@@ -21,7 +21,7 @@ module.exports = {
 			if (messageContent.match(pattern)) {
 				// Tally streak for user
 				const userId = interaction.author.id;
-				const streak = new Streak(userId);
+				const streak = new Streak(interaction);
 				await streak.init();
 				break;
 			}

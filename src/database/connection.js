@@ -101,6 +101,31 @@ class Database {
 		}
 	}
 
+	static async setStreakCounter(args) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			if (Database.getStreakCounter(args.userId)) {
+				await Counters.update(
+					{
+						username: args.username,
+						numberOfDays: args.numberOfDays,
+					}, {
+						where: {
+							userId: args.userId,
+						},
+					});
+			} else {
+				await Counters.create({
+					username: args.username,
+					userId: args.userId,
+					numberOfDays: args.numberOfDays,
+				});
+			}
+		} catch (error) {
+			return Error(`Something went wrong when setting streak_counters ${args.userId}.`);
+		}
+	}
+
 	static async getStreakCounter(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
@@ -122,6 +147,34 @@ class Database {
 			return results;
 		} catch (error) {
 			return Error(`Something went wrong when updating streak_counters with ${rows}.`);
+		}
+	}
+
+	static async incrementStreakCounter(userId) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			const results = await Counters.increment({
+				where: {
+					userId: userId,
+				},
+			});
+			return results;
+		} catch (error) {
+			return Error(`Something went wrong when incrementing streak_counters.userId=${userId}.`);
+		}
+	}
+
+	static async addStreakMessage(userId, messageContent, createdTimestamp) {
+		const Messages = Database.getStreakMessagesTable();
+		const row = {
+			userId: userId,
+			messageContent: messageContent,
+			timestamp: createdTimestamp,
+		};
+		try {
+			await Messages.create(row);
+		} catch {
+			return Error(`Something went wrong when adding to streak_messages ${row}.`);
 		}
 	}
 

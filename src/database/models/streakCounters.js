@@ -3,6 +3,11 @@ const Sequelize = require('sequelize');
 module.exports = {
 	name: 'streak_counters',
 	schema: {
+		username: {
+			type: Sequelize.STRING,
+			unique: true,
+			allowNull: true,
+		},
 		userId: {
 			type: Sequelize.STRING,
 			unique: true,
