@@ -7,7 +7,11 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { TOKEN } = process.env;
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [
+	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildMessages,
+	GatewayIntentBits.MessageContent,
+] });
 
 // Load database
 const Database = require('./database/connection');
