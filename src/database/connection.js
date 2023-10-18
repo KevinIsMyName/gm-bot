@@ -85,7 +85,7 @@ class Database {
 			if (error.name === 'SequelizeUniqueConstraintError') {
 				return Error('Admin already exists.');
 			}
-			return Error(`Something went wrong with adding admin.userId=${args.newAdminUserId}.`);
+			return Error(`Something went wrong when adding admin.userId=${args.newAdminUserId}.`);
 		}
 	}
 
@@ -97,7 +97,7 @@ class Database {
 			});
 			console.log(`Removed ${args.removeAdminUserId} from admin`);
 		} catch (error) {
-			return Error(`Something went wrong with removing admin.userId=${args.removeAdminUserId}.`);
+			return Error(`Something went wrong when removing admin.userId=${args.removeAdminUserId}.`);
 		}
 	}
 
@@ -111,7 +111,17 @@ class Database {
 			});
 			return results;
 		} catch (error) {
-			return Error(`Something went wrong with getting streak_counters.userId=${userId}.`);
+			return Error(`Something went wrong when getting streak_counters.userId=${userId}.`);
+		}
+	}
+
+	static async bulkUpdateStreakCounters(rows) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			const results = await Counters.bulkCreate(rows, { updateOnDuplicate: ['userId'], validate: true });
+			return results;
+		} catch (error) {
+			return Error(`Something went wrong when updating streak_counters with ${rows}.`);
 		}
 	}
 
@@ -131,7 +141,7 @@ class Database {
 			console.log('do nothing');
 			return result.timestamp;
 		} catch {
-			return Error(`Something went wrong with getting streak_messages.userId=${userId}.`);
+			return Error(`Something went wrong when getting streak_messages.userId=${userId}.`);
 		}
 	}
 

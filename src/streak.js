@@ -35,6 +35,15 @@ class Streak {
 	async revive() {
 		await Database.reviveStreak(this.userId);
 	}
+
+	static async reviveAll() {
+		const allUserIds = await Database.getAllUserIds();
+		const bulkUpdateRows = [];
+		for (const userId of allUserIds) {
+			bulkUpdateRows.push({ userId: userId, awaitingRevive: true });
+		}
+		await Database.bulkUpdateStreakCounters(bulkUpdateRows);
+	}
 }
 
 module.exports = Streak;
