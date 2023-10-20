@@ -3,7 +3,7 @@ const path = require('node:path');
 
 const Sequelize = require('sequelize');
 
-const LoggerFactory = require('../util/logger');
+const LoggerFactory = require('../utils/logger');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 

@@ -4,9 +4,9 @@ const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const cron = require('node-cron');
 
-const Database = require('./database/connection');
-const Streak = require('./util/Streak');
-const LoggerFactory = require('./util/logger');
+const Database = require('./database/database');
+const Streak = require('./utils/Streak');
+const LoggerFactory = require('./utils/logger');
 const { token } = require('../config.json');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));

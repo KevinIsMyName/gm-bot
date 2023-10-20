@@ -1,6 +1,6 @@
 const path = require('node:path');
 
-const Database = require('../database/connection');
+const Database = require('../database/database');
 const { fromUnixTime } = require('date-fns');
 const { utcToZonedTime } = require('date-fns-tz');
 

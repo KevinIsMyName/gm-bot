@@ -3,7 +3,7 @@ const path = require('node:path');
 
 const { REST, Routes } = require('discord.js');
 
-const LoggerFactory = require('./util/logger');
+const LoggerFactory = require('./utils/logger');
 const { token, clientId, guildId } = require('../config.json');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
