@@ -1,4 +1,3 @@
-const streakToEmoji = require('../../util/streakToEmoji');
 const chatCommands = require('../../events/chatCommands');
 const { prefix } = require('../../../config.json');
 

@@ -1,5 +1,5 @@
 const Database = require('../../database/connection');
-const convertStreakStatusToEmoji = require('../../util/streakToEmoji');
+const streakToEmoji = require('../../util/streakToEmoji');
 
 function formatLeaderboard(streaks) {
 	if (streaks.length === 0) return 'There are currently no streaks.\n';
@@ -7,8 +7,8 @@ function formatLeaderboard(streaks) {
 	let response = '';
 	let i = 1;
 	streaks.forEach(streak => {
-		response += `${convertStreakStatusToEmoji(streak)} `;
-		response += `\`${i} -\` ${streak.username} : ${streak.numberOfDays} days`;
+		response += `${streakToEmoji.convertStreakStatusToEmoji(streak)} `;
+		response += `\`${i} -\` ${streak.username} \`-\` ${streak.numberOfDays} days`;
 		response += '\n';
 		i += 1;
 	});
