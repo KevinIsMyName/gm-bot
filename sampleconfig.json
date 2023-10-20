@@ -9,5 +9,6 @@
     "regexArgs": [
         ["your-regex-matcher-here", "g"],
         ["your-regex-matcher-here", "im"]
-    ]
+    ],
+    "timeZone": "TZ identifier e.g. America/New_York"
 }

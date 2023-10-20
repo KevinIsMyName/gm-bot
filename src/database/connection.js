@@ -238,7 +238,7 @@ class Database {
 			const result = await Messages.findOne(
 				{
 					where: { userId: userId },
-					order: [['timestamp', 'desc']],
+					order: [['timestamp', 'DESC']],
 				},
 			);
 			return result.timestamp;

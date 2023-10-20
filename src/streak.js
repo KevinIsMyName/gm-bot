@@ -1,11 +1,20 @@
 const Database = require('./database/connection');
+const { fromUnixTime } = require('date-fns');
+const { utcToZonedTime } = require('date-fns-tz');
+const { timeZone } = require('../config.json');
 
-function oneDayAfterAnother(timestamp1, timestamp2) {
-	return true;
+function unixTimestampToDate(unixTimestamp) {
+	return new Date(utcToZonedTime(fromUnixTime(unixTimestamp / 1000), timeZone).toDateString()); // Hacky way to truncate time
 }
 
-function sameDay(timestamp1, timestamp2) {
-	return true;
+function oneDayAfterAnother(unixTimestamp1, unixTimestamp2) {
+	const date1 = unixTimestampToDate(unixTimestamp1);
+	const date2 = unixTimestampToDate(unixTimestamp2);
+	return Math.abs(date1.getTime() - date2.getTime()) == 86400000;
+}
+
+function sameDay(unixTimestamp1, unixTimestamp2) {
+	return unixTimestampToDate(unixTimestamp1).getTime() == unixTimestampToDate(unixTimestamp2).getTime();
 }
 
 
@@ -17,13 +26,14 @@ class Streak {
 	}
 
 	async processMessage() {
+		const messageContent = this.discordInteraction.content;
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
 		const currentTimestamp = this.discordInteraction.createdTimestamp;
+		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
 		if (oneDayAfterAnother(lastTimestamp, currentTimestamp)) {
-			this.increment();
+			await this.increment();
 			return 'continueStreak';
 		} else if (sameDay(lastTimestamp, currentTimestamp)) {
-			await Database.addStreakMessage(this.userId, this.discordInteraction.content, this.discordInteraction.createdTimestamp);
 			return 'sameDay';
 		} else {
 			return 'newStreak';
@@ -32,7 +42,6 @@ class Streak {
 
 	async increment() {
 		await Database.incrementStreakCounter(this.userId);
-		await Database.addStreakMessage(this.userId, this.discordInteraction.content, this.discordInteraction.createdTimestamp);
 	}
 
 	async reset() {
