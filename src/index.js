@@ -54,10 +54,10 @@ for (const file of eventFiles) {
 	}
 }
 
-// Load database daily-updater as a cron job
-
+// Load database updater daily as a cron job
 cron.schedule('0 0 * * *', () => {
-	Streak.updateAllStreakCounters();
+	console.log('Looking for dead streaks');
+	Streak.updateDeadStreakCounters();
 });
 
 // Log in to Discord with your client's token
