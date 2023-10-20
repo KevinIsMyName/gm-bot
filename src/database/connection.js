@@ -51,48 +51,12 @@ class Database {
 		console.log('Updated database schemas!');
 	}
 
-	static getAdminTable() {
-		return this.schemas['admins'];
-	}
-
 	static getStreakCounterTable() {
 		return this.schemas['streak_counters'];
 	}
 
 	static getStreakMessagesTable() {
 		return this.schemas['streak_messages'];
-	}
-
-	static async isAdmin(userId) {
-		const Admins = Database.getAdminTable();
-		const count = await Admins.count({ where: { userId: userId } });
-		return count > 0;
-	}
-
-	static async addAdmin(newAdminUserId, existingAdminUserId) {
-		const Admins = Database.getAdminTable();
-		try {
-			await Admins.create({
-				userId: newAdminUserId,
-				addedBy: existingAdminUserId,
-			});
-			console.log(`Added ${newAdminUserId} to admin`);
-		} catch (error) {
-			if (error.name === 'SequelizeUniqueConstraintError') {
-				return Error('Admin already exists.');
-			}
-			return Error(`Something went wrong when adding ${Admins.name}.userId=${newAdminUserId}.`);
-		}
-	}
-
-	static async removeAdmin(removeAdminUserId) {
-		const Admins = Database.getAdminTable();
-		try {
-			await Admins.destroy({ userId: removeAdminUserId });
-			console.log(`Removed ${removeAdminUserId} from admin`);
-		} catch (error) {
-			return Error(`Something went wrong when removing ${Admins.name}.userId=${removeAdminUserId}.`);
-		}
 	}
 
 	static async setStreakCounter(userId, numberOfDays, opts) {

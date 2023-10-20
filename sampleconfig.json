@@ -10,5 +10,6 @@
         ["your-regex-matcher-here", "g"],
         ["your-regex-matcher-here", "im"]
     ],
-    "timeZone": "TZ identifier e.g. America/New_York"
+    "timeZone": "TZ identifier e.g. America/New_York",
+    "adminRoleName": "name of Discord role (optional)"
 }

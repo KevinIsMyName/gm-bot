@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const Database = require('../../../database/connection');
+const authenticate = require('../../../util/authenticate');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -10,12 +11,12 @@ module.exports = {
 				.setDescription('User whose streak should be revived')
 				.setRequired(true)),
 	async execute(interaction) {
-		const adminUserId = interaction.user.id;
+		const adminMember = interaction.member;
 		const reviveUserId = interaction.options.getUser('user').id;
 		const reviveUsername = interaction.options.getUser('user').username;
 
 		try {
-			if (await Database.isAdmin(adminUserId)) {
+			if (authenticate.isAdmin(adminMember)) {
 				await Database.setStreakCounterRevive(reviveUserId, true);
 				await interaction.reply(`Successfully revived ${reviveUsername}'s streak`);
 			} else {

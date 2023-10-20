@@ -11,9 +11,10 @@ const { token } = require('../config.json');
 // Create a new client instance
 const client = new Client({ intents: [
 	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildMembers,
 	GatewayIntentBits.GuildMessages,
-	GatewayIntentBits.MessageContent,
 	GatewayIntentBits.GuildMessageReactions,
+	GatewayIntentBits.MessageContent,
 ] });
 
 // Load database
