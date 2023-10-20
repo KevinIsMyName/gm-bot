@@ -1,8 +1,11 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-// Require the necessary discord.js classes
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const cron = require('node-cron');
+
+const Database = require('./database/connection');
+const Streak = require('./streak');
 const { token } = require('../config.json');
 
 // Create a new client instance
@@ -14,7 +17,6 @@ const client = new Client({ intents: [
 ] });
 
 // Load database
-const Database = require('./database/connection');
 Database.sync();
 
 // Load commands
@@ -51,6 +53,12 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.execute(...args));
 	}
 }
+
+// Load database daily-updater as a cron job
+
+cron.schedule('0 0 * * *', () => {
+	Streak.updateAllStreakCounters();
+});
 
 // Log in to Discord with your client's token
 client.login(token);

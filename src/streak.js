@@ -3,6 +3,8 @@ const { fromUnixTime } = require('date-fns');
 const { utcToZonedTime } = require('date-fns-tz');
 const { timeZone } = require('../config.json');
 
+const ONE_DAY_IN_SECONDS = 86400;
+
 function unixTimestampToDate(unixTimestamp) {
 	return new Date(utcToZonedTime(fromUnixTime(unixTimestamp / 1000), timeZone).toDateString()); // Hacky way to truncate time
 }
@@ -10,13 +12,12 @@ function unixTimestampToDate(unixTimestamp) {
 function oneDayAfterAnother(unixTimestamp1, unixTimestamp2) {
 	const date1 = unixTimestampToDate(unixTimestamp1);
 	const date2 = unixTimestampToDate(unixTimestamp2);
-	return Math.abs(date1.getTime() - date2.getTime()) == 86400000;
+	return Math.abs(date1.getTime() - date2.getTime()) === (ONE_DAY_IN_SECONDS * 1000);
 }
 
-function sameDay(unixTimestamp1, unixTimestamp2) {
+function sameDate(unixTimestamp1, unixTimestamp2) {
 	return unixTimestampToDate(unixTimestamp1).getTime() == unixTimestampToDate(unixTimestamp2).getTime();
 }
-
 
 class Streak {
 	constructor(discordInteraction) {
@@ -33,7 +34,7 @@ class Streak {
 		if (oneDayAfterAnother(lastTimestamp, currentTimestamp)) {
 			await this.increment();
 			return 'continueStreak';
-		} else if (sameDay(lastTimestamp, currentTimestamp)) {
+		} else if (sameDate(lastTimestamp, currentTimestamp)) {
 			return 'sameDay';
 		} else {
 			return 'newStreak';
@@ -68,7 +69,23 @@ class Streak {
 		await Database.bulkUpdateStreakCounters(bulkUpdateRows);
 	}
 
+	static async updateDeadStreakCounters() {
+		// BUG: Might not be same timezone as Discord's timestamps
+		const currentTime = new Date().getTime();
 
+		const streakCounters = await Database.getAllAliveStreakCounters();
+		const updatedStreakCounters = [];
+		streakCounters.forEach(async (streakRow) => {
+			const userId = streakRow.userId;
+			const lastTimestamp = await Database.getLastTimestamp(userId);
+			if (oneDayAfterAnother(currentTime, lastTimestamp) || sameDate(currentTime, lastTimestamp)) {
+				// Streak is healthy, should not be reset.
+			} else {
+				updatedStreakCounters.push({ userId: 0 });
+			}
+		});
+		if (updatedStreakCounters) Database.bulkUpdateStreakCounters(updatedStreakCounters);
+	}
 }
 
 module.exports = Streak;
