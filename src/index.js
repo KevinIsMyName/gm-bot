@@ -22,7 +22,7 @@ Database.sync();
 // Load commands
 client.commands = new Collection();
 
-const foldersPath = path.join(__dirname, 'commands');
+const foldersPath = path.join(__dirname, 'commands', 'slash');
 const commandFolders = fs.readdirSync(foldersPath);
 
 for (const folder of commandFolders) {

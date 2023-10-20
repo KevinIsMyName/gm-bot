@@ -1,35 +1,11 @@
+const fs = require('node:fs');
+const path = require('node:path');
+
 const { Events } = require('discord.js');
 const { channelIds, prefix, regexArgs } = require('../../config.json');
 const Streak = require('../streak');
 const Database = require('../database/connection');
 
-function formatLeaderboard(streaks) {
-	if (!streaks) return 'There are currently no streaks.\n';
-
-	let response = '';
-	let i = 1;
-	streaks.forEach(streak => {
-		response += `${convertStreakStatusToEmoji(streak)} `;
-		response += `\`${i} -\` ${streak.username} : ${streak.numberOfDays} days`;
-		response += '\n';
-		i += 1;
-	});
-	return response;
-}
-
-function formatSingleStreak(streak) {
-	if (!streak) return 'No streak was found for you.\n';
-	const responseEmojiPrefix = convertStreakStatusToEmoji(streak);
-	if (streak.awaitingRevive) return `${responseEmojiPrefix} ${streak.username} is currently on a **revived** ${streak.numberOfDays} days streak.`;
-	else if (streak.numberOfDays > 0) return `${responseEmojiPrefix} ${streak.username} is currently on a ${streak.numberOfDays} days streak.`;
-	else return `${responseEmojiPrefix} ${streak.username} currently has no streak.`;
-}
-
-function convertStreakStatusToEmoji(streak) {
-	if (streak.awaitingRevive) return '👼';
-	else if (streak.numberOfDays > 0) return '🔥';
-	else return '💀';
-}
 
 module.exports = {
 	name: Events.MessageCreate,
@@ -42,7 +18,6 @@ module.exports = {
 
 		// Process streak messages messages
 		const messageContent = interaction.content;
-		const messageAuthorUserId = interaction.author.id;
 		for (const args of regexArgs) {
 			const [ re, mode ] = args;
 			const pattern = new RegExp(re, mode);
@@ -75,13 +50,20 @@ module.exports = {
 		if (messageContent.length < prefix.length && messageContent.substring(0, prefix.length) != prefix) return;
 
 		const command = messageContent.substring(prefix.length, messageContent.length);
-		let replyMessageContent = '';
-		if (command === 'leaderboard') {
-			replyMessageContent = formatLeaderboard(await Database.getAllStreakCounters());
-			await interaction.reply(replyMessageContent);
-		} else if (command === 'current') {
-			replyMessageContent = formatSingleStreak(await Database.getStreakCounterByUserId(messageAuthorUserId));
-			await interaction.reply(replyMessageContent);
+		const keywordToHandler = {};
+
+		const folderPath = path.join(__dirname, '..', 'commands', 'chat');
+		const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
+		for (const file of commandFiles) {
+			const filePath = path.join(folderPath, file);
+			const commandConfig = require(filePath);
+			if ('keyword' in commandConfig && 'handler' in commandConfig) {
+				keywordToHandler[commandConfig.keyword] = commandConfig.handler;
+			} else {
+				console.log(`[WARNING] The chat command at ${filePath} is missing a required "keyword" or "handler" property.`);
+			}
 		}
+
+		if (keywordToHandler[command]) await keywordToHandler[command](interaction);
 	},
 };
