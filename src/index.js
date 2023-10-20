@@ -6,7 +6,10 @@ const cron = require('node-cron');
 
 const Database = require('./database/connection');
 const Streak = require('./util/Streak');
+const LoggerFactory = require('./util/logger');
 const { token } = require('../config.json');
+
+const logger = LoggerFactory.getLogger(path.basename(__filename));
 
 // Create a new client instance
 const client = new Client({ intents: [
@@ -36,7 +39,7 @@ for (const folder of commandFolders) {
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
 		} else {
-			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+			logger.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
 	}
 }
@@ -57,7 +60,7 @@ for (const file of eventFiles) {
 
 // Load database updater daily as a cron job
 cron.schedule('0 0 * * *', () => {
-	console.log('Looking for dead streaks');
+	logger.info(`Starting cron job. Current datetime is ${new Date().toISOString}`);
 	Streak.updateDeadStreakCounters();
 });
 

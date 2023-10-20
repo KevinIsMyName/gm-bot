@@ -1,6 +1,11 @@
-const Sequelize = require('sequelize');
 const fs = require('node:fs');
 const path = require('node:path');
+
+const Sequelize = require('sequelize');
+
+const LoggerFactory = require('../util/logger');
+
+const logger = LoggerFactory.getLogger(path.basename(__filename));
 
 class Database {
 	static #filename = 'database.sqlite';
@@ -24,8 +29,7 @@ class Database {
 				idle: 10000,
 			},
 		});
-
-		console.log('Connected to database!');
+		logger.info('Connected to database!');
 	}
 
 	static get connection() {
@@ -45,10 +49,10 @@ class Database {
 			const { name, schema } = require(filePath);
 			const model = Database.connection.define(name, schema);
 			this.schemas[name] = model;
-			console.debug(`Synced ${file}`);
+			logger.debug(`Synced ${file}`);
 		}
 		Database.connection.sync({ alter: true });
-		console.log('Updated database schemas!');
+		logger.info('Updated database schemas!');
 	}
 
 	static getStreakCounterTable() {
@@ -63,6 +67,7 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
+				logger.debug(`Streak counter exists for ${Counters.name}.userId=${userId}`);
 				if (opts['username']) {
 					await Counters.update(
 						{
@@ -70,20 +75,29 @@ class Database {
 							numberOfDays: numberOfDays,
 						},
 						{ where: { userId: userId } });
+					logger.info(`Successfully updated ${Counters.name}.username=${opts['username']}
+						and ${Counters.name}.numberOfDays=${numberOfDays} for userId=${userId}`);
 				} else {
 					await Counters.update(
 						{ numberOfDays: numberOfDays },
 						{ where: { userId: userId } });
+					logger.info(`Successfully updated ${Counters.name}.numberOfDays=${numberOfDays} for userId=${userId}`);
 				}
 			} else {
-				await Counters.create({
+				logger.warn(`Streak counter does not exist for ${Counters.name}.userId=${userId}`);
+				const newRow = {
 					username: opts['username'] || null,
 					userId: userId,
 					numberOfDays: numberOfDays,
-				});
+				};
+				await Counters.create(newRow);
+				logger.info(`Successfully created ${Counters.name} with new row ${JSON.stringify(newRow)}`);
 			}
-		} catch (error) {
-			return Error(`Something went wrong when setting ${Counters.name} for ${userId}.`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when setting ${Counters.name}.numberOfDays=${numberOfDays} for ${userId}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -91,9 +105,13 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			const result = await Counters.findOne({ where: { userId: userId } });
+			logger.info(`Successfully got ${Counters.name}.userId=${userId}}`);
 			return result;
-		} catch (error) {
-			return Error(`Something went wrong when getting ${Counters.name}.userId=${userId}.`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when getting ${Counters.name}.userId=${userId}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -103,9 +121,13 @@ class Database {
 			const results = await Counters.findAll({ order: [
 				['numberOfDays', 'DESC']],
 			});
+			logger.info(`Successully got all ${Counters.name} by ORDER DESC`);
 			return results;
-		} catch (error) {
-			return Error(`Something went wrong when getting all ${Counters.name}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when getting all ${Counters.name}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -113,9 +135,13 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			const result = await Counters.findOne({ where: { userId: userId } });
+			logger.info(`Successully got ${Counters.name}.userId=${userId}`);
 			return result;
-		} catch (error) {
-			return Error(`Something went wrong when getting ${Counters.name}.userId=${userId}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when getting ${Counters.name}.userId=${userId}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -132,9 +158,13 @@ class Database {
 				order: [
 					['numberOfDays', 'DESC']],
 			});
+			logger.info(`Successully got all ${Counters.name}`);
 			return results;
-		} catch (error) {
-			return Error(`Something went wrong when getting all alive ${Counters.name}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when getting all alive ${Counters.name}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -142,9 +172,13 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			const results = await Counters.bulkCreate(rows, { updateOnDuplicate: ['userId'], validate: true });
+			logger.info(`Successfully bulk-created/updated ${Counters.name} with rows ${JSON.stringify(rows)}`);
 			return results;
-		} catch (error) {
-			return Error(`Something went wrong when updating ${Counters.name} with ${rows}.`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when updating ${Counters.name} with ${JSON.stringify(rows)}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -152,9 +186,13 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			const results = await Counters.increment({ numberOfDays: 1 }, { where: { userId: userId } });
+			logger.info(`Successfully incremented numberOfDays by 1 for ${Counters.name}.userId=${userId}`);
 			return results;
-		} catch (error) {
-			return Error(`Something went wrong when incrementing ${Counters.name}.userId=${userId}.`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when incrementing ${Counters.name}.userId=${userId}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -162,14 +200,21 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
+				logger.debug(`Streak counter does exist for ${Counters.name}.userId=${userId}`);
 				await Counters.update(
 					{ awaitingRevive: bool },
 					{ where: { userId: userId } });
+				logger.info(`Successfully revived streak counter for ${Counters.name}.userId=${userId}`);
 			} else {
+				logger.info(`No existing streak counter for ${Counters.name}.userId=${userId}`);
 				await Database.setStreakCounter(userId, 0, { username: opts['username'] || null });
+				logger.info(`Initialized streak counter to 0 for ${Counters.name}.userId=${userId}`);
 			}
-		} catch (error) {
-			return Error(`Something went wrong with reviving ${Counters.name}.userId=${userId}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong with reviving ${Counters.name}.userId=${userId}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -177,8 +222,12 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			await Counters.update({ awaitingRevive: bool }, { where : {} }); // update() requires a where clause
-		} catch (error) {
-			return Error(`Something went wrong with reviving all ${Counters.name}`);
+			logger.info('Successfully revived all streak counters');
+		} catch (err) {
+			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -191,8 +240,12 @@ class Database {
 		};
 		try {
 			await Messages.create(row);
-		} catch (error) {
-			return Error(`Something went wrong when adding to ${Messages.name} ${row}.`);
+			logger.info(`Successfully added message ${messageContent} for userId=${userId}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when adding to ${Messages.name} ${row}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
@@ -205,18 +258,22 @@ class Database {
 					order: [['timestamp', 'DESC']],
 				},
 			);
+			logger.info(`Successfully got latest message's timestamp of ${result.timestamp} for userId=${userId}`);
 			return result.timestamp;
-		} catch (error) {
-			return Error(`Something went wrong when getting ${Messages.name}.userId=${userId}.`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when getting ${Messages.name}.userId=${userId}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
 		}
 	}
 
 	static async close() {
 		if (Database.#connection === null) {
 			await Database.#connection.close();
-			console.log('Connection closed');
+			logger.info('Connection closed');
 		} else {
-			console.log('Connection is already closed');
+			logger.warn('Connection is already closed');
 		}
 	}
 }

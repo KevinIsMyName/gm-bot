@@ -1,5 +1,10 @@
+const path = require('node:path');
+
 const Database = require('../../database/connection');
+const LoggerFactory = require('../../util/logger');
 const streakToEmoji = require('../../util/streakToEmoji');
+
+const logger = LoggerFactory.getLogger(path.basename(__filename));
 
 function countDigits(n) {
 	let count = 0;
@@ -12,7 +17,6 @@ function countDigits(n) {
 
 function formatLeaderboard(streakRows) {
 	if (streakRows.length === 0) return 'There are currently no streaks.\n';
-
 
 	const numStreaks = streakRows.length;
 	const numDigits = countDigits(numStreaks);
@@ -31,6 +35,8 @@ module.exports = {
 	'description': 'Show everyone\'s streaks\' status',
 	'handler': async function(interaction) {
 		const replyMessageContent = formatLeaderboard(await Database.getAllStreakCounters());
+		logger.debug(replyMessageContent);
 		await interaction.reply(replyMessageContent);
+		logger.info('Successfully displayed leaderboard');
 	},
 };

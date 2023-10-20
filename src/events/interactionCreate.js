@@ -1,4 +1,10 @@
+const path = require('node:path');
+
 const { Events } = require('discord.js');
+
+const LoggerFactory = require('../util/logger');
+
+const logger = LoggerFactory.getLogger(path.basename(__filename));
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -8,15 +14,15 @@ module.exports = {
 		const command = interaction.client.commands.get(interaction.commandName);
 
 		if (!command) {
-			console.error(`No command matching ${interaction.commandName} was found.`);
+			logger.warn(`No command matching ${interaction.commandName} was found.`);
 			return;
 		}
 
 		try {
 			await command.execute(interaction);
-		} catch (error) {
-			console.error(`Error executing ${interaction.commandName}`);
-			console.error(error);
+		} catch (err) {
+			logger.error(`Error executing ${interaction.commandName}`);
+			logger.error(err);
 		}
 	},
 };

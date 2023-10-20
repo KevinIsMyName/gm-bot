@@ -1,5 +1,10 @@
+const path = require('node:path');
+
 const chatCommands = require('../../events/chatCommands');
+const LoggerFactory = require('../../util/logger');
 const { prefix } = require('../../../config.json');
+
+const logger = LoggerFactory.getLogger(path.basename(__filename));
 
 module.exports = {
 	'keyword': 'help',
@@ -11,6 +16,8 @@ module.exports = {
 			if (!commands[commandKeyword].description) continue; // Ignore commands with no description
 			replyMessageContent += `\`${prefix}${commandKeyword}\`: ${commands[commandKeyword].description}\n`;
 		}
+		logger.debug(replyMessageContent);
 		await interaction.reply(replyMessageContent);
+		logger.info('Successfully displayed help');
 	},
 };

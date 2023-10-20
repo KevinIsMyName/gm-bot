@@ -2,9 +2,13 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { Events } = require('discord.js');
-const { channelIds, prefix, regexArgs } = require('../../config.json');
-const Streak = require('../util/Streak');
+
 const Database = require('../database/connection');
+const LoggerFactory = require('../util/logger');
+const Streak = require('../util/Streak');
+const { channelIds, prefix, regexArgs } = require('../../config.json');
+
+const logger = LoggerFactory.getLogger(path.basename(__filename));
 
 function getChatCommands() {
 	const folderPath = path.join(__dirname, '..', 'commands', 'chat');
@@ -15,11 +19,12 @@ function getChatCommands() {
 		const commandConfig = require(filePath);
 		if ('keyword' in commandConfig && 'handler' in commandConfig) {
 			chatCommandConfigs[commandConfig.keyword] = {
-				description: commandConfig.description,
+				description: commandConfig.description || null,
 				handler: commandConfig.handler,
 			};
+			logger.info(`Sucessfully got chat command (${commandConfig.keyword}) for ${filePath}`);
 		} else {
-			console.log(`[WARNING] The chat command at ${filePath} is missing a required "keyword" or "handler" property.`);
+			logger.warn(`The chat command at ${filePath} is missing a required "keyword" or "handler" property.`);
 		}
 	}
 	return chatCommandConfigs;
@@ -57,6 +62,7 @@ module.exports = {
 						emoji = '❓';
 						break;
 				}
+				logger.debug(`Reacting to ${messageContent} with ${emoji}`);
 				interaction.react(emoji);
 				return;
 			}

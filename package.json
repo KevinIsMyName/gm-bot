@@ -15,7 +15,8 @@
     "dotenv": "^16.3.1",
     "node-cron": "^3.0.2",
     "sequelize": "^6.33.0",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
     "eslint": "^8.51.0"
