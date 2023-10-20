@@ -3,7 +3,7 @@ const Database = require('../../database/connection');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('Revive')
+		.setName('revive')
 		.setDescription('Revive streak of a user')
 		.addUserOption(option =>
 			option.setName('user')
@@ -16,7 +16,8 @@ module.exports = {
 
 		try {
 			if (await Database.isAdmin(adminUserId)) {
-				await Database.reviveStreak(reviveUserId);
+				await Database.setStreakCounterReviveTrue(reviveUserId);
+				await interaction.reply(`Successfully revived ${reviveUsername}'s streak`);
 			} else {
 				await interaction.reply('You must be an admin to revive other user\'s streaks', { ephemeral: true });
 			}

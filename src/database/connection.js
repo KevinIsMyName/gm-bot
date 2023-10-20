@@ -276,6 +276,15 @@ class Database {
 		}
 	}
 
+	static async setAllStreakCountersReviveTrue() {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			await Counters.update({ awaitingRevive: true }, { where : {} });
+		} catch (error) {
+			return Error(`Something went wrong with reviving all ${Counters.name}`);
+		}
+	}
+
 	static async close() {
 		if (Database.#connection === null) {
 			await Database.#connection.close();
