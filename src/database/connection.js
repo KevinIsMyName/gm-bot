@@ -194,7 +194,7 @@ class Database {
 		}
 	}
 
-	static async setStreakCounterReviveTrue(userId, bool) {
+	static async setStreakCounterRevive(userId, bool) {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
@@ -209,10 +209,10 @@ class Database {
 		}
 	}
 
-	static async setAllStreakCountersReviveTrue() {
+	static async setAllStreakCountersRevive(bool) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			await Counters.update({ awaitingRevive: true }, { where : {} }); // update() requires a where clause
+			await Counters.update({ awaitingRevive: bool }, { where : {} }); // update() requires a where clause
 		} catch (error) {
 			return Error(`Something went wrong with reviving all ${Counters.name}`);
 		}

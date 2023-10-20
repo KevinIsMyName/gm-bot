@@ -10,7 +10,7 @@ module.exports = {
 
 		try {
 			if (await Database.isAdmin(adminUserId)) {
-				await Database.setAllStreakCountersReviveTrue();
+				await Database.setAllStreakCountersRevive(true);
 				await interaction.reply('Successfully revived everyone\'s streaks');
 			} else {
 				await interaction.reply({ content: 'You must be an admin to revive everyone\'s streaks', ephemeral: true });
