@@ -1,6 +1,21 @@
 const { Events } = require('discord.js');
 const { channelIds, prefix, regexArgs } = require('../../config.json');
 const Streak = require('../streak');
+const Database = require('../database/connection');
+
+function parseLeaderboard(databaseRows) {
+	let response = '';
+	let i = 1;
+	for (const streak of databaseRows) {
+		if (streak.numberOfDays > 0) response += '🔥 ';
+		else if (streak.awaitingRevive) response += '👼 ';
+		else response += '💀 ';
+		response += `\`${i} -\` ${streak.username}\n`;
+		i += 1;
+	}
+	// response = response.substring(0, response.length - 2); // Remove the last endline
+	return response;
+}
 
 module.exports = {
 	name: Events.MessageCreate,
@@ -42,15 +57,19 @@ module.exports = {
 		}
 
 		// Ignore messages that are not prefixed
-		if (messageContent.length < prefix.length && messageContent.substr(0, prefix.length) != prefix) return;
+		if (messageContent.length < prefix.length && messageContent.substring(0, prefix.length) != prefix) return;
 
-		const command = messageContent.susbtr(prefix.length, messageContent.length);
+		const command = messageContent.substring(prefix.length, messageContent.length);
+		let replyMessageContent = '';
 		switch (command) {
 			case 'leaderboard':
+				replyMessageContent = parseLeaderboard(await Database.getAllStreakCounters());
 				break;
 			case 'current':
 				break;
+			default:
+				break;
 		}
-
+		await interaction.reply(replyMessageContent);
 	},
 };

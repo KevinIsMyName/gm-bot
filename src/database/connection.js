@@ -122,7 +122,7 @@ class Database {
 				});
 			}
 		} catch (error) {
-			return Error(`Something went wrong when setting streak_counters ${args.userId}.`);
+			return Error(`Something went wrong when setting streak_counters for ${args.userId}.`);
 		}
 	}
 
@@ -137,6 +137,20 @@ class Database {
 			return results;
 		} catch (error) {
 			return Error(`Something went wrong when getting streak_counters.userId=${userId}.`);
+		}
+	}
+
+	static async getAllStreakCounters() {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			const results = await Counters.findAll({
+				order: [
+					['numberOfDays', 'DESC'],
+				],
+			});
+			return results;
+		} catch (error) {
+			return Error('Something went wrong when getting all streak_counters');
 		}
 	}
 
@@ -191,7 +205,6 @@ class Database {
 					],
 				},
 			);
-			console.log('do nothing');
 			return result.timestamp;
 		} catch {
 			return Error(`Something went wrong when getting streak_messages.userId=${userId}.`);

@@ -5,7 +5,6 @@ module.exports = {
 	schema: {
 		username: {
 			type: Sequelize.STRING,
-			unique: true,
 			allowNull: true,
 		},
 		userId: {
