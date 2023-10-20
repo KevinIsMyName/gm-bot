@@ -85,7 +85,7 @@ class Database {
 			if (error.name === 'SequelizeUniqueConstraintError') {
 				return Error('Admin already exists.');
 			}
-			return Error(`Something went wrong when adding admin.userId=${args.newAdminUserId}.`);
+			return Error(`Something went wrong when adding ${Admins.name}.userId=${args.newAdminUserId}.`);
 		}
 	}
 
@@ -97,7 +97,7 @@ class Database {
 			});
 			console.log(`Removed ${args.removeAdminUserId} from admin`);
 		} catch (error) {
-			return Error(`Something went wrong when removing admin.userId=${args.removeAdminUserId}.`);
+			return Error(`Something went wrong when removing ${Admins.name}.userId=${args.removeAdminUserId}.`);
 		}
 	}
 
@@ -133,7 +133,7 @@ class Database {
 				});
 			}
 		} catch (error) {
-			return Error(`Something went wrong when setting streak_counters for ${userId}.`);
+			return Error(`Something went wrong when setting ${Counters.name} for ${userId}.`);
 		}
 	}
 
@@ -147,7 +147,7 @@ class Database {
 			});
 			return results;
 		} catch (error) {
-			return Error(`Something went wrong when getting streak_counters.userId=${userId}.`);
+			return Error(`Something went wrong when getting ${Counters.name}.userId=${userId}.`);
 		}
 	}
 
@@ -161,7 +161,7 @@ class Database {
 			});
 			return results;
 		} catch (error) {
-			return Error('Something went wrong when getting all streak_counters');
+			return Error(`Something went wrong when getting all ${Counters.name}`);
 		}
 	}
 
@@ -175,7 +175,7 @@ class Database {
 			});
 			return result;
 		} catch (error) {
-			return Error('Something went wrong when getting streak for');
+			return Error(`Something went wrong when getting ${Counters.name}.userId=${userId}`);
 		}
 	}
 
@@ -195,7 +195,7 @@ class Database {
 			});
 			return results;
 		} catch (error) {
-			return Error('Something went wrong when getting all alive streak_counters');
+			return Error(`Something went wrong when getting all alive ${Counters.name}`);
 		}
 	}
 
@@ -205,7 +205,7 @@ class Database {
 			const results = await Counters.bulkCreate(rows, { updateOnDuplicate: ['userId'], validate: true });
 			return results;
 		} catch (error) {
-			return Error(`Something went wrong when updating streak_counters with ${rows}.`);
+			return Error(`Something went wrong when updating ${Counters.name} with ${rows}.`);
 		}
 	}
 
@@ -219,7 +219,7 @@ class Database {
 			});
 			return results;
 		} catch (error) {
-			return Error(`Something went wrong when incrementing streak_counters.userId=${userId}.`);
+			return Error(`Something went wrong when incrementing ${Counters.name}.userId=${userId}.`);
 		}
 	}
 
@@ -233,7 +233,7 @@ class Database {
 		try {
 			await Messages.create(row);
 		} catch (error) {
-			return Error(`Something went wrong when adding to streak_messages ${row}.`);
+			return Error(`Something went wrong when adding to ${Messages.name} ${row}.`);
 		}
 	}
 
@@ -252,11 +252,11 @@ class Database {
 			);
 			return result.timestamp;
 		} catch (error) {
-			return Error(`Something went wrong when getting streak_messages.userId=${userId}.`);
+			return Error(`Something went wrong when getting ${Messages.name}.userId=${userId}.`);
 		}
 	}
 
-	static async reviveStreak(userId) {
+	static async setStreakCounterReviveTrue(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
@@ -272,7 +272,7 @@ class Database {
 				await Database.setStreakCounter(userId, 0);
 			}
 		} catch (error) {
-			return Error(`Something went wrong with resetting streak counter of userId=${userId}`);
+			return Error(`Something went wrong with reviving ${Counters.name},userId=${userId}`);
 		}
 	}
 
