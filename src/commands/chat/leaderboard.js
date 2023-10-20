@@ -2,7 +2,7 @@ const Database = require('../../database/connection');
 const convertStreakStatusToEmoji = require('../../util/streakToEmoji');
 
 function formatLeaderboard(streaks) {
-	if (!streaks) return 'There are currently no streaks.\n';
+	if (streaks.length === 0) return 'There are currently no streaks.\n';
 
 	let response = '';
 	let i = 1;
