@@ -52,7 +52,7 @@ class Streak {
 	async init() {
 		const result = await Database.getStreakCounter(this.userId);
 		if (!result) {
-			await Streak.reset();
+			await this.reset();
 		}
 	}
 
