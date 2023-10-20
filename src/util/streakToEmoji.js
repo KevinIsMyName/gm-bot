@@ -4,4 +4,4 @@ function convertStreakStatusToEmoji(streak) {
 	else return '💀';
 }
 
-module.exports = convertStreakStatusToEmoji;
+exports.convertStreakStatusToEmoji = convertStreakStatusToEmoji;

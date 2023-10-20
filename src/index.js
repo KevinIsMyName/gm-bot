@@ -5,7 +5,7 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const cron = require('node-cron');
 
 const Database = require('./database/connection');
-const Streak = require('./streak');
+const Streak = require('./util/Streak');
 const { token } = require('../config.json');
 
 // Create a new client instance

@@ -3,9 +3,27 @@ const path = require('node:path');
 
 const { Events } = require('discord.js');
 const { channelIds, prefix, regexArgs } = require('../../config.json');
-const Streak = require('../streak');
+const Streak = require('../util/Streak');
 const Database = require('../database/connection');
 
+function getChatCommands() {
+	const folderPath = path.join(__dirname, '..', 'commands', 'chat');
+	const chatCommandConfigs = {};
+	const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
+	for (const file of commandFiles) {
+		const filePath = path.join(folderPath, file);
+		const commandConfig = require(filePath);
+		if ('keyword' in commandConfig && 'handler' in commandConfig) {
+			chatCommandConfigs[commandConfig.keyword] = {
+				description: commandConfig.description,
+				handler: commandConfig.handler,
+			};
+		} else {
+			console.log(`[WARNING] The chat command at ${filePath} is missing a required "keyword" or "handler" property.`);
+		}
+	}
+	return chatCommandConfigs;
+}
 
 module.exports = {
 	name: Events.MessageCreate,
@@ -50,20 +68,10 @@ module.exports = {
 		if (messageContent.length < prefix.length && messageContent.substring(0, prefix.length) != prefix) return;
 
 		const command = messageContent.substring(prefix.length, messageContent.length);
-		const keywordToHandler = {};
+		const chatCommands = getChatCommands();
 
-		const folderPath = path.join(__dirname, '..', 'commands', 'chat');
-		const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
-		for (const file of commandFiles) {
-			const filePath = path.join(folderPath, file);
-			const commandConfig = require(filePath);
-			if ('keyword' in commandConfig && 'handler' in commandConfig) {
-				keywordToHandler[commandConfig.keyword] = commandConfig.handler;
-			} else {
-				console.log(`[WARNING] The chat command at ${filePath} is missing a required "keyword" or "handler" property.`);
-			}
-		}
-
-		if (keywordToHandler[command]) await keywordToHandler[command](interaction);
+		if (chatCommands[command]) await chatCommands[command].handler(interaction);
 	},
 };
+
+module.exports.getChatCommands = getChatCommands;

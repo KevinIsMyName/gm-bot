@@ -17,6 +17,7 @@ function formatLeaderboard(streaks) {
 
 module.exports = {
 	'keyword': 'leaderboard',
+	'description': 'Show everyone\'s streaks\' status',
 	'handler': async function(interaction) {
 		const replyMessageContent = formatLeaderboard(await Database.getAllStreakCounters());
 		await interaction.reply(replyMessageContent);

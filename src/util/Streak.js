@@ -1,7 +1,7 @@
-const Database = require('./database/connection');
+const Database = require('../database/connection');
 const { fromUnixTime } = require('date-fns');
 const { utcToZonedTime } = require('date-fns-tz');
-const { timeZone } = require('../config.json');
+const { timeZone } = require('../../config.json');
 
 const ONE_DAY_IN_SECONDS = 86400;
 
