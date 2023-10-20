@@ -16,7 +16,7 @@ module.exports = {
 			} else {
 				await interaction.reply('How about you stop?! 😡', { ephemeral: true });
 			}
-		} catch {
+		} catch (error) {
 			await interaction.reply('Something went wrong with trying to stop the bot ', { ephemeral: true });
 		}
 	},

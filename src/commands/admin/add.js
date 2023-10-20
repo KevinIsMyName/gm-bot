@@ -31,7 +31,7 @@ module.exports = {
 			} else {
 				await interaction.reply('You must be an admin to add other admins', { ephemeral: true });
 			}
-		} catch {
+		} catch (error) {
 			await interaction.reply(`Unable to add ${newAdminUsername} as admin`, { ephemeral: true });
 		}
 	},
