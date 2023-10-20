@@ -30,8 +30,8 @@ class Streak {
 		const messageContent = this.discordInteraction.content;
 
 		// Handle revives
-		const awaitingRevive = await Database.getStreakCounter(this.userId);
-		if (awaitingRevive) {
+		const streakCounter = await Database.getStreakCounter(this.userId);
+		if (streakCounter && streakCounter.awaitingRevive) {
 			await this.increment();
 			await this.resetRevive();
 		}
@@ -43,12 +43,12 @@ class Streak {
 			return 'newStreak';
 		}
 
-		const currentTimestamp = this.discordInteraction.createdTimestamp;
+		const createdTimestamp = this.discordInteraction.createdTimestamp;
 		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
-		if (oneDayAfterAnother(lastTimestamp, currentTimestamp)) {
+		if (oneDayAfterAnother(lastTimestamp, createdTimestamp)) {
 			await this.increment();
 			return 'continueStreak';
-		} else if (sameDate(lastTimestamp, currentTimestamp)) {
+		} else if (sameDate(lastTimestamp, createdTimestamp)) {
 			return 'sameDay';
 		} else {
 			this.resetStreak(1);

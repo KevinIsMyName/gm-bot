@@ -126,8 +126,8 @@ class Database {
 	static async getStreakCounter(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const results = await Counters.findOne({ where: { userId: userId } });
-			return results;
+			const result = await Counters.findOne({ where: { userId: userId } });
+			return result;
 		} catch (error) {
 			return Error(`Something went wrong when getting ${Counters.name}.userId=${userId}.`);
 		}
@@ -194,7 +194,7 @@ class Database {
 		}
 	}
 
-	static async setStreakCounterRevive(userId, bool) {
+	static async setStreakCounterRevive(userId, bool, opts) {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
@@ -202,7 +202,7 @@ class Database {
 					{ awaitingRevive: bool },
 					{ where: { userId: userId } });
 			} else {
-				await Database.setStreakCounter(userId, 0, {});
+				await Database.setStreakCounter(userId, 0, { username: opts['username'] || null });
 			}
 		} catch (error) {
 			return Error(`Something went wrong with reviving ${Counters.name}.userId=${userId}`);

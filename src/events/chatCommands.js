@@ -41,8 +41,6 @@ module.exports = {
 			const pattern = new RegExp(re, mode);
 			if (messageContent.match(pattern)) {
 				const streak = new Streak(interaction);
-				await streak.init();
-
 				const status = await streak.processMessage();
 				let emoji = null;
 				switch (status) {
