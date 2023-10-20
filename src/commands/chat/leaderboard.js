@@ -1,15 +1,26 @@
 const Database = require('../../database/connection');
 const streakToEmoji = require('../../util/streakToEmoji');
 
-function formatLeaderboard(streaks) {
-	if (streaks.length === 0) return 'There are currently no streaks.\n';
+function countDigits(n) {
+	let count = 0;
+	while (n != 0) {
+		n = Math.floor(n / 10);
+		count++;
+	}
+	return count;
+}
 
+function formatLeaderboard(streakRows) {
+	if (streakRows.length === 0) return 'There are currently no streaks.\n';
+
+
+	const numStreaks = streakRows.length;
+	const numDigits = countDigits(numStreaks);
 	let response = '';
 	let i = 1;
-	streaks.forEach(streak => {
+	streakRows.forEach(streak => {
 		response += `${streakToEmoji.convertStreakStatusToEmoji(streak)} `;
-		response += `\`${i} |\` ${streak.username} \`:\` ${streak.numberOfDays} days`;
-		response += '\n';
+		response += `\`${String(i).padStart(numDigits, ' ')} |\` ${streak.username} \`:\` ${streak.numberOfDays} days\n`;
 		i += 1;
 	});
 	return response;
