@@ -154,6 +154,26 @@ class Database {
 		}
 	}
 
+	static async getAllAliveStreakCounters() {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			const results = await Counters.findAll({
+				where: {
+					[Sequelize.Op.or]: [
+						{ numberOfDays: { [Sequelize.Op.gt]: 0 } },
+						{ awaitingRevive: true },
+					],
+				},
+				order: [
+					['numberOfDays', 'DESC'],
+				],
+			});
+			return results;
+		} catch (error) {
+			return Error('Something went wrong when getting all alive streak_counters');
+		}
+	}
+
 	static async bulkUpdateStreakCounters(rows) {
 		const Counters = Database.getStreakCounterTable();
 		try {
