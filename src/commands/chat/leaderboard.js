@@ -8,7 +8,7 @@ function formatLeaderboard(streaks) {
 	let i = 1;
 	streaks.forEach(streak => {
 		response += `${streakToEmoji.convertStreakStatusToEmoji(streak)} `;
-		response += `\`${i} -\` ${streak.username} \`-\` ${streak.numberOfDays} days`;
+		response += `\`${i} |\` ${streak.username} \`:\` ${streak.numberOfDays} days`;
 		response += '\n';
 		i += 1;
 	});
