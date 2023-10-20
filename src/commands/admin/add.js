@@ -16,23 +16,23 @@ module.exports = {
 
 		// Disallow targeting self
 		if (existingAdminUserId === newAdminUserId) {
-			await interaction.reply('Nice try! 😒', { ephemeral: true });
+			await interaction.reply({ content: 'Nice try! 😒', ephemeral: true });
 			return;
 		}
 
 		try {
 			if (await Database.isAdmin(existingAdminUserId)) {
 				if (await Database.isAdmin(newAdminUserId)) {
-					await interaction.reply(`${newAdminUsername} is already an admin`, { ephemeral: true });
+					await interaction.reply({ content: `${newAdminUsername} is already an admin`, ephemeral: true });
 				} else {
 					await Database.addAdmin(newAdminUserId, existingAdminUserId);
-					await interaction.reply(`Successfully added ${newAdminUsername} as admin`, { ephemeral: true });
+					await interaction.reply({ content: `Successfully added ${newAdminUsername} as admin`, ephemeral: true });
 				}
 			} else {
-				await interaction.reply('You must be an admin to add other admins', { ephemeral: true });
+				await interaction.reply({ content: 'You must be an admin to add other admins', ephemeral: true });
 			}
 		} catch (error) {
-			await interaction.reply(`Unable to add ${newAdminUsername} as admin`, { ephemeral: true });
+			await interaction.reply({ content: `Unable to add ${newAdminUsername} as admin`, ephemeral: true });
 		}
 	},
 };

@@ -16,7 +16,7 @@ module.exports = {
 
 		// Disallow targeting self
 		if (existingAdminUserId === removeAdminUserId) {
-			await interaction.reply('Did you mean to remove yourself from admin? I don\'t think so...try asking another admin to do it for you 🤔', { ephemeral : true });
+			await interaction.reply({ content: 'Did you mean to remove yourself from admin? I don\'t think so...try asking another admin to do it for you 🤔', ephemeral : true });
 			return;
 		}
 
@@ -24,15 +24,15 @@ module.exports = {
 			if (await Database.isAdmin(existingAdminUserId)) {
 				if (await Database.isAdmin(removeAdminUserId)) {
 					await Database.removeAdmin(removeAdminUserId);
-					await interaction.reply(`Successfully removed ${removeAdminUsername} from admin`, { ephemeral: true });
+					await interaction.reply({ content: `Successfully removed ${removeAdminUsername} from admin`, ephemeral: true });
 				} else {
-					await interaction.reply(`${removeAdminUsername} is already not an admin`, { ephemeral: true });
+					await interaction.reply({ content: `${removeAdminUsername} is already not an admin`, ephemeral: true });
 				}
 			} else {
-				await interaction.reply('You must be an admin to remove other admins', { ephemeral: true });
+				await interaction.reply({ content: 'You must be an admin to remove other admins', ephemeral: true });
 			}
 		} catch (error) {
-			await interaction.reply(`Unable to remove ${removeAdminUsername} as admin`, { ephemeral: true });
+			await interaction.reply({ content: `Unable to remove ${removeAdminUsername} as admin`, ephemeral: true });
 		}
 	},
 };

@@ -13,10 +13,10 @@ module.exports = {
 				await Database.setAllStreakCountersReviveTrue();
 				await interaction.reply('Successfully revived everyone\'s streaks');
 			} else {
-				await interaction.reply('You must be an admin to revive everyone\'s streaks', { ephemeral: true });
+				await interaction.reply({ content: 'You must be an admin to revive everyone\'s streaks', ephemeral: true });
 			}
 		} catch (error) {
-			await interaction.reply('Unable to add revive everyone\' streaks', { ephemeral: true });
+			await interaction.reply({ content: 'Unable to add revive everyone\' streaks', ephemeral: true });
 		}
 	},
 };

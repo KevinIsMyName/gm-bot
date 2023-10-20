@@ -14,10 +14,10 @@ module.exports = {
 				process.exit(0);
 
 			} else {
-				await interaction.reply('How about you stop?! 😡', { ephemeral: true });
+				await interaction.reply({ content: 'How about you stop?! 😡', ephemeral: true });
 			}
 		} catch (error) {
-			await interaction.reply('Something went wrong with trying to stop the bot ', { ephemeral: true });
+			await interaction.reply({ content: 'Something went wrong with trying to stop the bot ', ephemeral: true });
 		}
 	},
 };
