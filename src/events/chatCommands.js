@@ -3,18 +3,32 @@ const { channelIds, prefix, regexArgs } = require('../../config.json');
 const Streak = require('../streak');
 const Database = require('../database/connection');
 
-function parseLeaderboard(databaseRows) {
+function formatLeaderboard(streaks) {
+	if (!streaks) return 'There are currently no streaks.\n';
+
 	let response = '';
 	let i = 1;
-	for (const streak of databaseRows) {
-		if (streak.numberOfDays > 0) response += '🔥 ';
-		else if (streak.awaitingRevive) response += '👼 ';
-		else response += '💀 ';
-		response += `\`${i} -\` ${streak.username}\n`;
+	streaks.forEach(streak => {
+		response += `${convertStreakStatusToEmoji(streak)} `;
+		response += `\`${i} -\` ${streak.username} : ${streak.numberOfDays} days`;
+		response += '\n';
 		i += 1;
-	}
-	// response = response.substring(0, response.length - 2); // Remove the last endline
+	});
 	return response;
+}
+
+function formatSingleStreak(streak) {
+	if (!streak) return 'No streak was found for you.\n';
+	const responseEmojiPrefix = convertStreakStatusToEmoji(streak);
+	if (streak.numberOfDays > 0) return `${responseEmojiPrefix} ${streak.username} is currently on a ${streak.numberOfDays} days streak.`;
+	else if (streak.awaitingRevive) return `${responseEmojiPrefix} ${streak.username} is currently on a **revived** ${streak.numberOfDays} days streak.`;
+	else return `${responseEmojiPrefix} ${streak.username} currently has no streak.`;
+}
+
+function convertStreakStatusToEmoji(streak) {
+	if (streak.numberOfDays > 0) return '🔥';
+	else if (streak.awaitingRevive) return '👼';
+	else return '💀';
 }
 
 module.exports = {
@@ -28,6 +42,7 @@ module.exports = {
 
 		// Process streak messages messages
 		const messageContent = interaction.content;
+		const messageAuthorUserId = interaction.author.id;
 		for (const args of regexArgs) {
 			const [ re, mode ] = args;
 			const pattern = new RegExp(re, mode);
@@ -61,15 +76,12 @@ module.exports = {
 
 		const command = messageContent.substring(prefix.length, messageContent.length);
 		let replyMessageContent = '';
-		switch (command) {
-			case 'leaderboard':
-				replyMessageContent = parseLeaderboard(await Database.getAllStreakCounters());
-				break;
-			case 'current':
-				break;
-			default:
-				break;
+		if (command === 'leaderboard') {
+			replyMessageContent = formatLeaderboard(await Database.getAllStreakCounters());
+			await interaction.reply(replyMessageContent);
+		} else if (command === 'current') {
+			replyMessageContent = formatSingleStreak(await Database.getStreakCounterByUserId(messageAuthorUserId));
+			await interaction.reply(replyMessageContent);
 		}
-		await interaction.reply(replyMessageContent);
 	},
 };

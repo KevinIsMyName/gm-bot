@@ -154,6 +154,20 @@ class Database {
 		}
 	}
 
+	static async getStreakCounterByUserId(userId) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			const result = await Counters.findOne({
+				where: {
+					userId: userId,
+				},
+			});
+			return result;
+		} catch (error) {
+			return Error('Something went wrong when getting streak for');
+		}
+	}
+
 	static async getAllAliveStreakCounters() {
 		const Counters = Database.getStreakCounterTable();
 		try {
