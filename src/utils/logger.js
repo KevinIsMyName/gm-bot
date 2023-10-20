@@ -1,12 +1,20 @@
 const winston = require('winston');
 
+const { timeZone } = require('../../config.json');
+
+const timezoned = () => {
+	return new Date().toLocaleString('en-US', {
+		timeZone: timeZone,
+	});
+};
+
 class LoggerFactory {
 	static getLogger(userService) {
 		const logger = winston.createLogger({
 			level: 'info',
 			format: winston.format.combine(
 				winston.format.timestamp({
-					format: 'YYYY-MM-DD HH:mm:ss',
+					format: timezoned,
 				}),
 				winston.format.errors({ stack: true }),
 				winston.format.splat(),
