@@ -194,12 +194,12 @@ class Database {
 		}
 	}
 
-	static async setStreakCounterReviveTrue(userId) {
+	static async setStreakCounterReviveTrue(userId, bool) {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
 				await Counters.update(
-					{ awaitingRevive: true },
+					{ awaitingRevive: bool },
 					{ where: { userId: userId } });
 			} else {
 				await Database.setStreakCounter(userId, 0, {});

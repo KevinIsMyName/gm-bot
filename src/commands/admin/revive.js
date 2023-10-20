@@ -16,7 +16,7 @@ module.exports = {
 
 		try {
 			if (await Database.isAdmin(adminUserId)) {
-				await Database.setStreakCounterReviveTrue(reviveUserId);
+				await Database.setStreakCounterRevive(reviveUserId, true);
 				await interaction.reply(`Successfully revived ${reviveUsername}'s streak`);
 			} else {
 				await interaction.reply({ content: 'You must be an admin to revive other user\'s streaks', ephemeral: true });

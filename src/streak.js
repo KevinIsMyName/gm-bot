@@ -28,9 +28,18 @@ class Streak {
 
 	async processMessage() {
 		const messageContent = this.discordInteraction.content;
+
+		// Handle revives
+		const awaitingRevive = await Database.getStreakCounter(this.userId);
+		if (awaitingRevive) {
+			await this.increment();
+			await this.resetRevive();
+		}
+
+		// Handle new streaks
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
 		if (!lastTimestamp) {
-			this.reset(1);
+			this.resetStreak(1);
 			return 'newStreak';
 		}
 
@@ -42,7 +51,7 @@ class Streak {
 		} else if (sameDate(lastTimestamp, currentTimestamp)) {
 			return 'sameDay';
 		} else {
-			this.reset(1);
+			this.resetStreak(1);
 			return 'newStreak';
 		}
 	}
@@ -51,14 +60,18 @@ class Streak {
 		await Database.incrementStreakCounter(this.userId);
 	}
 
-	async reset(numberOfDays) {
+	async resetStreak(numberOfDays) {
 		await Database.setStreakCounter(this.userId, numberOfDays, { username: this.username });
+	}
+
+	async resetRevive() {
+		await Database.setStreakCounterRevive(false);
 	}
 
 	async init() {
 		const result = await Database.getStreakCounter(this.userId);
 		if (!result) {
-			await this.reset(0);
+			await this.resetStreak(0);
 		}
 	}
 
