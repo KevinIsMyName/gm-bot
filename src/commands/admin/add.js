@@ -25,7 +25,7 @@ module.exports = {
 				if (await Database.isAdmin(newAdminUserId)) {
 					await interaction.reply(`${newAdminUsername} is already an admin`, { ephemerel: true });
 				} else {
-					await Database.addAdmin({ newAdminUserId: newAdminUserId, existingAdminUserId: existingAdminUserId });
+					await Database.addAdmin(newAdminUserId, existingAdminUserId);
 					await interaction.reply(`Successfully added ${newAdminUsername} as admin`, { ephemerel: true });
 				}
 			} else {

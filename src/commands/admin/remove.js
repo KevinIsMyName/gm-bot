@@ -23,7 +23,7 @@ module.exports = {
 		try {
 			if (await Database.isAdmin(existingAdminUserId)) {
 				if (await Database.isAdmin(removeAdminUserId)) {
-					await Database.removeAdmin({ removeAdminUserId: removeAdminUserId, existingAdminUserId: existingAdminUserId });
+					await Database.removeAdmin(removeAdminUserId);
 					await interaction.reply(`Successfully removed ${removeAdminUsername} from admin`, { ephemerel: true });
 				} else {
 					await interaction.reply(`${removeAdminUsername} is already not an admin`, { ephemerel: true });

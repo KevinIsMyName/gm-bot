@@ -65,39 +65,33 @@ class Database {
 
 	static async isAdmin(userId) {
 		const Admins = Database.getAdminTable();
-		const count = await Admins.count({
-			where: {
-				userId: userId,
-			},
-		});
+		const count = await Admins.count({ where: { userId: userId } });
 		return count > 0;
 	}
 
-	static async addAdmin(args) {
+	static async addAdmin(newAdminUserId, existingAdminUserId) {
 		const Admins = Database.getAdminTable();
 		try {
 			await Admins.create({
-				userId: args.newAdminUserId,
-				addedBy: args.existingAdminUserId,
+				userId: newAdminUserId,
+				addedBy: existingAdminUserId,
 			});
-			console.log(`Added ${args.newAdminUserId} to admin`);
+			console.log(`Added ${newAdminUserId} to admin`);
 		} catch (error) {
 			if (error.name === 'SequelizeUniqueConstraintError') {
 				return Error('Admin already exists.');
 			}
-			return Error(`Something went wrong when adding ${Admins.name}.userId=${args.newAdminUserId}.`);
+			return Error(`Something went wrong when adding ${Admins.name}.userId=${newAdminUserId}.`);
 		}
 	}
 
-	static async removeAdmin(args) {
+	static async removeAdmin(removeAdminUserId) {
 		const Admins = Database.getAdminTable();
 		try {
-			await Admins.destroy({
-				userId: args.removeAdminUserId,
-			});
-			console.log(`Removed ${args.removeAdminUserId} from admin`);
+			await Admins.destroy({ userId: removeAdminUserId });
+			console.log(`Removed ${removeAdminUserId} from admin`);
 		} catch (error) {
-			return Error(`Something went wrong when removing ${Admins.name}.userId=${args.removeAdminUserId}.`);
+			return Error(`Something went wrong when removing ${Admins.name}.userId=${removeAdminUserId}.`);
 		}
 	}
 
@@ -110,20 +104,12 @@ class Database {
 						{
 							username: opts['test'],
 							numberOfDays: numberOfDays,
-						}, {
-							where: {
-								userId: userId,
-							},
-						});
+						},
+						{ where: { userId: userId } });
 				} else {
 					await Counters.update(
-						{
-							numberOfDays: numberOfDays,
-						}, {
-							where: {
-								userId: userId,
-							},
-						});
+						{ numberOfDays: numberOfDays },
+						{ where: { userId: userId } });
 				}
 			} else {
 				await Counters.create({
@@ -140,11 +126,7 @@ class Database {
 	static async getStreakCounter(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const results = await Counters.findOne({
-				where: {
-					userId: userId,
-				},
-			});
+			const results = await Counters.findOne({ where: { userId: userId } });
 			return results;
 		} catch (error) {
 			return Error(`Something went wrong when getting ${Counters.name}.userId=${userId}.`);
@@ -154,10 +136,8 @@ class Database {
 	static async getAllStreakCounters() {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const results = await Counters.findAll({
-				order: [
-					['numberOfDays', 'DESC'],
-				],
+			const results = await Counters.findAll({ order: [
+				['numberOfDays', 'DESC']],
 			});
 			return results;
 		} catch (error) {
@@ -168,11 +148,7 @@ class Database {
 	static async getStreakCounterByUserId(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const result = await Counters.findOne({
-				where: {
-					userId: userId,
-				},
-			});
+			const result = await Counters.findOne({ where: { userId: userId } });
 			return result;
 		} catch (error) {
 			return Error(`Something went wrong when getting ${Counters.name}.userId=${userId}`);
@@ -190,8 +166,7 @@ class Database {
 					],
 				},
 				order: [
-					['numberOfDays', 'DESC'],
-				],
+					['numberOfDays', 'DESC']],
 			});
 			return results;
 		} catch (error) {
@@ -212,11 +187,7 @@ class Database {
 	static async incrementStreakCounter(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const results = await Counters.increment({
-				where: {
-					userId: userId,
-				},
-			});
+			const results = await Counters.increment({ numberOfDays: 1 }, { where: { userId: userId } });
 			return results;
 		} catch (error) {
 			return Error(`Something went wrong when incrementing ${Counters.name}.userId=${userId}.`);
@@ -228,25 +199,20 @@ class Database {
 		try {
 			if (await Database.getStreakCounter(userId)) {
 				await Counters.update(
-					{
-						awaitingRevive: true,
-					}, {
-						where: {
-							userId: userId,
-						},
-					});
+					{ awaitingRevive: true },
+					{ where: { userId: userId } });
 			} else {
 				await Database.setStreakCounter(userId, 0);
 			}
 		} catch (error) {
-			return Error(`Something went wrong with reviving ${Counters.name},userId=${userId}`);
+			return Error(`Something went wrong with reviving ${Counters.name}.userId=${userId}`);
 		}
 	}
 
 	static async setAllStreakCountersReviveTrue() {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			await Counters.update({ awaitingRevive: true }, { where : {} });
+			await Counters.update({ awaitingRevive: true }, { where : {} }); // update() requires a where clause
 		} catch (error) {
 			return Error(`Something went wrong with reviving all ${Counters.name}`);
 		}
@@ -271,12 +237,8 @@ class Database {
 		try {
 			const result = await Messages.findOne(
 				{
-					where: {
-						userId: userId,
-					},
-					order: [
-						['timestamp', 'desc'],
-					],
+					where: { userId: userId },
+					order: [['timestamp', 'desc']],
 				},
 			);
 			return result.timestamp;
