@@ -1,11 +1,11 @@
 const Database = require('./database/connection');
 
 function oneDayAfterAnother(timestamp1, timestamp2) {
-	
+	return true;
 }
 
 function sameDay(timestamp1, timestamp2) {
-
+	return true;
 }
 
 
@@ -19,14 +19,14 @@ class Streak {
 	async processMessage() {
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
 		const currentTimestamp = this.discordInteraction.createdTimestamp;
-		if (this.withinOneDay(lastTimestamp, currentTimestamp)) {
+		if (oneDayAfterAnother(lastTimestamp, currentTimestamp)) {
 			this.increment();
-			return '☀';
-		} else if (this.sameDay(lastTimestamp, currentTimestamp)) {
+			return 'continueStreak';
+		} else if (sameDay(lastTimestamp, currentTimestamp)) {
 			await Database.addStreakMessage(this.userId, this.discordInteraction.content, this.discordInteraction.createdTimestamp);
-			return '😴';
+			return 'sameDay';
 		} else {
-			return '🌞';
+			return 'newStreak';
 		}
 	}
 
