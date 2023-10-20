@@ -99,10 +99,10 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
-				if (opts['test']) {
+				if (opts['username']) {
 					await Counters.update(
 						{
-							username: opts['test'],
+							username: opts['username'],
 							numberOfDays: numberOfDays,
 						},
 						{ where: { userId: userId } });
@@ -113,7 +113,7 @@ class Database {
 				}
 			} else {
 				await Counters.create({
-					username: opts['test'] || null,
+					username: opts['username'] || null,
 					userId: userId,
 					numberOfDays: numberOfDays,
 				});
@@ -202,7 +202,7 @@ class Database {
 					{ awaitingRevive: true },
 					{ where: { userId: userId } });
 			} else {
-				await Database.setStreakCounter(userId, 0);
+				await Database.setStreakCounter(userId, 0, {});
 			}
 		} catch (error) {
 			return Error(`Something went wrong with reviving ${Counters.name}.userId=${userId}`);

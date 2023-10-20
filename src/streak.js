@@ -29,6 +29,11 @@ class Streak {
 	async processMessage() {
 		const messageContent = this.discordInteraction.content;
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
+		if (!lastTimestamp) {
+			this.reset(1);
+			return 'newStreak';
+		}
+
 		const currentTimestamp = this.discordInteraction.createdTimestamp;
 		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
 		if (oneDayAfterAnother(lastTimestamp, currentTimestamp)) {
@@ -47,7 +52,7 @@ class Streak {
 	}
 
 	async reset(numberOfDays) {
-		await Database.setStreakCounter(this.userId, numberOfDays, this.username);
+		await Database.setStreakCounter(this.userId, numberOfDays, { username: this.username });
 	}
 
 	async init() {
