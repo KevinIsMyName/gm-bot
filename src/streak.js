@@ -36,12 +36,7 @@ class Streak {
 	}
 
 	async reset() {
-		const args = {
-			username: this.username,
-			userId: this.userId,
-			numberOfDays: 0,
-		};
-		await Database.setStreakCounter(args);
+		await Database.setStreakCounter(this.userId, 0, this.username);
 	}
 
 	async init() {

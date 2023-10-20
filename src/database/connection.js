@@ -101,28 +101,39 @@ class Database {
 		}
 	}
 
-	static async setStreakCounter(args) {
+	static async setStreakCounter(userId, numberOfDays, opts) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			if (Database.getStreakCounter(args.userId)) {
-				await Counters.update(
-					{
-						username: args.username,
-						numberOfDays: args.numberOfDays,
-					}, {
-						where: {
-							userId: args.userId,
-						},
-					});
+			if (await Database.getStreakCounter(userId)) {
+				if (opts['test']) {
+					await Counters.update(
+						{
+							username: opts['test'],
+							numberOfDays: numberOfDays,
+						}, {
+							where: {
+								userId: userId,
+							},
+						});
+				} else {
+					await Counters.update(
+						{
+							numberOfDays: numberOfDays,
+						}, {
+							where: {
+								userId: userId,
+							},
+						});
+				}
 			} else {
 				await Counters.create({
-					username: args.username,
-					userId: args.userId,
-					numberOfDays: args.numberOfDays,
+					username: opts['test'] || null,
+					userId: userId,
+					numberOfDays: numberOfDays,
 				});
 			}
 		} catch (error) {
-			return Error(`Something went wrong when setting streak_counters for ${args.userId}.`);
+			return Error(`Something went wrong when setting streak_counters for ${userId}.`);
 		}
 	}
 
@@ -221,7 +232,7 @@ class Database {
 		};
 		try {
 			await Messages.create(row);
-		} catch {
+		} catch (error) {
 			return Error(`Something went wrong when adding to streak_messages ${row}.`);
 		}
 	}
@@ -240,8 +251,28 @@ class Database {
 				},
 			);
 			return result.timestamp;
-		} catch {
+		} catch (error) {
 			return Error(`Something went wrong when getting streak_messages.userId=${userId}.`);
+		}
+	}
+
+	static async reviveStreak(userId) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			if (await Database.getStreakCounter(userId)) {
+				await Counters.update(
+					{
+						awaitingRevive: true,
+					}, {
+						where: {
+							userId: userId,
+						},
+					});
+			} else {
+				await Database.setStreakCounter(userId, 0);
+			}
+		} catch (error) {
+			return Error(`Something went wrong with resetting streak counter of userId=${userId}`);
 		}
 	}
 
