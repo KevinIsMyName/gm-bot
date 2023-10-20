@@ -2,7 +2,7 @@ const path = require('node:path');
 
 const { Events } = require('discord.js');
 
-const LoggerFactory = require('../util/logger');
+const LoggerFactory = require('../utils/logger');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 

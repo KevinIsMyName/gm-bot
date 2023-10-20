@@ -1,8 +1,8 @@
 const path = require('node:path');
 
-const Database = require('../../database/connection');
-const LoggerFactory = require('../../util/logger');
-const streakToEmoji = require('../../util/streakToEmoji');
+const Database = require('../../database/database');
+const LoggerFactory = require('../../utils/logger');
+const streakToEmoji = require('../../utils/streakToEmoji');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 

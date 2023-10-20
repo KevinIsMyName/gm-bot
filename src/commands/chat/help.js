@@ -1,7 +1,7 @@
 const path = require('node:path');
 
 const chatCommands = require('../../events/chatCommands');
-const LoggerFactory = require('../../util/logger');
+const LoggerFactory = require('../../utils/logger');
 const { prefix } = require('../../../config.json');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));

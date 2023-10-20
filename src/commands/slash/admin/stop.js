@@ -2,9 +2,9 @@ const path = require('node:path');
 
 const { SlashCommandBuilder } = require('discord.js');
 
-const Database = require('../../../database/connection');
-const LoggerFactory = require('../../../util/logger');
-const authenticate = require('../../../util/authenticate');
+const Database = require('../../../database/database');
+const LoggerFactory = require('../../../utils/logger');
+const authenticate = require('../../../utils/authenticate');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 
