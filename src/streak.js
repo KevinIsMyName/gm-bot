@@ -37,6 +37,7 @@ class Streak {
 		} else if (sameDate(lastTimestamp, currentTimestamp)) {
 			return 'sameDay';
 		} else {
+			this.reset(1);
 			return 'newStreak';
 		}
 	}
@@ -45,14 +46,14 @@ class Streak {
 		await Database.incrementStreakCounter(this.userId);
 	}
 
-	async reset() {
-		await Database.setStreakCounter(this.userId, 0, this.username);
+	async reset(numberOfDays) {
+		await Database.setStreakCounter(this.userId, numberOfDays, this.username);
 	}
 
 	async init() {
 		const result = await Database.getStreakCounter(this.userId);
 		if (!result) {
-			await this.reset();
+			await this.reset(0);
 		}
 	}
 
