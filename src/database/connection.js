@@ -223,6 +223,35 @@ class Database {
 		}
 	}
 
+	static async setStreakCounterReviveTrue(userId) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			if (await Database.getStreakCounter(userId)) {
+				await Counters.update(
+					{
+						awaitingRevive: true,
+					}, {
+						where: {
+							userId: userId,
+						},
+					});
+			} else {
+				await Database.setStreakCounter(userId, 0);
+			}
+		} catch (error) {
+			return Error(`Something went wrong with reviving ${Counters.name},userId=${userId}`);
+		}
+	}
+
+	static async setAllStreakCountersReviveTrue() {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			await Counters.update({ awaitingRevive: true }, { where : {} });
+		} catch (error) {
+			return Error(`Something went wrong with reviving all ${Counters.name}`);
+		}
+	}
+
 	static async addStreakMessage(userId, messageContent, createdTimestamp) {
 		const Messages = Database.getStreakMessagesTable();
 		const row = {
@@ -253,35 +282,6 @@ class Database {
 			return result.timestamp;
 		} catch (error) {
 			return Error(`Something went wrong when getting ${Messages.name}.userId=${userId}.`);
-		}
-	}
-
-	static async setStreakCounterReviveTrue(userId) {
-		const Counters = Database.getStreakCounterTable();
-		try {
-			if (await Database.getStreakCounter(userId)) {
-				await Counters.update(
-					{
-						awaitingRevive: true,
-					}, {
-						where: {
-							userId: userId,
-						},
-					});
-			} else {
-				await Database.setStreakCounter(userId, 0);
-			}
-		} catch (error) {
-			return Error(`Something went wrong with reviving ${Counters.name},userId=${userId}`);
-		}
-	}
-
-	static async setAllStreakCountersReviveTrue() {
-		const Counters = Database.getStreakCounterTable();
-		try {
-			await Counters.update({ awaitingRevive: true }, { where : {} });
-		} catch (error) {
-			return Error(`Something went wrong with reviving all ${Counters.name}`);
 		}
 	}
 
