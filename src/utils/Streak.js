@@ -27,6 +27,7 @@ function oneDayAfterAnother(unixTimestamp1, unixTimestamp2) {
 function sameDate(unixTimestamp1, unixTimestamp2) {
 	const result = unixTimestampToDate(unixTimestamp1).getTime() == unixTimestampToDate(unixTimestamp2).getTime();
 	logger.debug(`${unixTimestamp1} and ${unixTimestamp2} are ${result ? 'not ' : ''}same date`);
+	return result;
 }
 
 class Streak {
@@ -41,22 +42,9 @@ class Streak {
 		const createdTimestamp = this.discordInteraction.createdTimestamp;
 		logger.debug(`Received message of ${messageContent} from ${this.userIid} at ${createdTimestamp}`);
 
-		// Handle revives
-		const streakCounter = await Database.getStreakCounter(this.userId);
-		if (streakCounter && streakCounter.awaitingRevive && (streakCounter.numberOfDays === 0)) {
-			await this.useRevive();
-			await this.increment();
-			logger.info(`Streak for ${this.username} used a revive`);
-			return 'continueStreak';
-		}
-
 		// Handle new streaks
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
-		if (!lastTimestamp) {
-			logger.info(`Message started a brand new streak for ${this.username}`);
-			this.resetStreak(1);
-			return 'newStreak';
-		}
+		const streakCounter = await Database.getStreakCounter(this.userId);
 
 		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
 		if (oneDayAfterAnother(lastTimestamp, createdTimestamp)) {
@@ -66,6 +54,11 @@ class Streak {
 		} else if (sameDate(lastTimestamp, createdTimestamp)) {
 			logger.info(`Duplicate streak message for ${this.username}`);
 			return 'sameDay';
+		} else if (streakCounter && streakCounter.awaitingRevive) {
+			await this.useRevive();
+			await this.increment();
+			logger.info(`Streak for ${this.username} used a revive`);
+			return 'continueStreak';
 		} else {
 			logger.info(`Streak was broken and is now starting at 1 for ${this.username}`);
 			this.resetStreak(1);
