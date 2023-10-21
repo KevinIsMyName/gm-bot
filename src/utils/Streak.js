@@ -43,10 +43,11 @@ class Streak {
 
 		// Handle revives
 		const streakCounter = await Database.getStreakCounter(this.userId);
-		if (streakCounter && streakCounter.awaitingRevive) {
+		if (streakCounter && streakCounter.awaitingRevive && (streakCounter.numberOfDays === 0)) {
+			await this.useRevive();
 			await this.increment();
-			await this.resetRevive();
-			logger.info(`Streak for ${this.username} used up its revive`);
+			logger.info(`Streak for ${this.username} used a revive`);
+			return 'continueStreak';
 		}
 
 		// Handle new streaks
@@ -59,7 +60,7 @@ class Streak {
 
 		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
 		if (oneDayAfterAnother(lastTimestamp, createdTimestamp)) {
-			await this.increment();
+			await this.continue();
 			logger.info(`Streak continues for ${this.username}`);
 			return 'continueStreak';
 		} else if (sameDate(lastTimestamp, createdTimestamp)) {
@@ -74,22 +75,42 @@ class Streak {
 
 	async increment() {
 		await Database.incrementStreakCounter(this.userId);
+		await Database.setReviveNumberOfDaysToNumberOfDays(this.userId);
 		logger.debug(`Streak incremented for ${this.username}`);
+	}
+
+	async continue() {
+		await Database.incrementStreakCounter(this.userId);
+		await Database.setReviveNumberOfDaysToNumberOfDays(this.userId);
+		await this.disableRevive(this.userId);
+		logger.debug(`Streak continued for ${this.username}`);
 	}
 
 	async resetStreak(numberOfDays) {
 		await Database.setStreakCounter(this.userId, numberOfDays, { username: this.username });
+		await this.disableRevive();
+		await Database.setReviveNumberOfDays(this.userId, numberOfDays);
 		logger.debug(`Streak for ${this.username} reset back to ${numberOfDays}`);
 	}
 
-	async resetRevive() {
-		await Database.setStreakCounterRevive(false);
-		logger.debug(`Streak for ${this.username} is no longer awaiting revive`);
+	static async isAlive(userId) {
+		return await Database.getStreakCounter(userId).numberOfDays !== 0;
 	}
 
-	async revive() {
-		await Database.reviveStreak(this.userId);
-		logger.debug(`Successfully revived streak for ${this.username}`);
+	async useRevive() {
+		await Database.setNumberOfDaysToReviveNumberOfDays(this.userId);
+		await this.disableRevive();
+		logger.debug(`Streak for ${this.username} is now revived`);
+	}
+
+	async enableRevive() {
+		await Database.setStreakCounterRevive(this.userId, true, { username: this.username });
+		logger.debug(`Streak for ${this.username} will awaiting revive`);
+	}
+
+	async disableRevive() {
+		await Database.setStreakCounterRevive(this.userId, false, { username: this.username });
+		logger.debug(`Streak for ${this.username} is no longer awaiting revive`);
 	}
 
 	static async updateDeadStreakCounters() {
@@ -106,7 +127,7 @@ class Streak {
 				logger.info(`${streakRow.username}'s streak is healthy at ${streakRow.numberOfDays}, should not be reset.`);
 			} else {
 				logger.info(`${streakRow.username}'s streak broke, resetting to 0.`);
-				updatedStreakCounters.push({ numberOfDays: 0, userId: streakRow.userId });
+				updatedStreakCounters.push({ numberOfDays: 0, userId: streakRow.userId, reviveNumberOfDays: streakRow.numberOfDays });
 			}
 		});
 		if (updatedStreakCounters) Database.bulkUpdateStreakCounters(updatedStreakCounters);

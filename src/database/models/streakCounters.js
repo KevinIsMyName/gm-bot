@@ -21,5 +21,9 @@ module.exports = {
 			type: Sequelize.BOOLEAN,
 			defaultValue: false,
 		},
+		reviveNumberOfDays: {
+			type: Sequelize.INTEGER,
+			defaultValue: 0,
+		},
 	},
 };

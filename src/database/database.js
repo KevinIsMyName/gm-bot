@@ -131,20 +131,6 @@ class Database {
 		}
 	}
 
-	static async getStreakCounterByUserId(userId) {
-		const Counters = Database.getStreakCounterTable();
-		try {
-			const result = await Counters.findOne({ where: { userId: userId } });
-			logger.info(`Successully got ${Counters.name}.userId=${userId}`);
-			return result;
-		} catch (err) {
-			const errorMessageContent = `Something went wrong when getting ${Counters.name}.userId=${userId}`;
-			logger.error(errorMessageContent);
-			logger.error(err);
-			return Error(errorMessageContent);
-		}
-	}
-
 	static async getAllAliveStreakCounters() {
 		const Counters = Database.getStreakCounterTable();
 		try {
@@ -185,9 +171,8 @@ class Database {
 	static async incrementStreakCounter(userId) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const results = await Counters.increment({ numberOfDays: 1 }, { where: { userId: userId } });
+			await Counters.increment({ numberOfDays: 1 }, { where: { userId: userId } });
 			logger.info(`Successfully incremented numberOfDays by 1 for ${Counters.name}.userId=${userId}`);
-			return results;
 		} catch (err) {
 			const errorMessageContent = `Something went wrong when incrementing ${Counters.name}.userId=${userId}`;
 			logger.error(errorMessageContent);
@@ -196,15 +181,15 @@ class Database {
 		}
 	}
 
-	static async setStreakCounterRevive(userId, bool, opts) {
+	static async setStreakCounterRevive(userId, reviveBool, opts) {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
 				logger.debug(`Streak counter does exist for ${Counters.name}.userId=${userId}`);
 				await Counters.update(
-					{ awaitingRevive: bool },
+					{ awaitingRevive: reviveBool },
 					{ where: { userId: userId } });
-				logger.info(`Successfully revived streak counter for ${Counters.name}.userId=${userId}`);
+				logger.info(`Successfully set ${Counters.name}.awaiting_revive=${reviveBool} for ${Counters.name}.userId=${userId}`);
 			} else {
 				logger.info(`No existing streak counter for ${Counters.name}.userId=${userId}`);
 				await Database.setStreakCounter(userId, 0, { username: opts['username'] || null });
@@ -223,6 +208,51 @@ class Database {
 		try {
 			await Counters.update({ awaitingRevive: bool }, { where : {} }); // update() requires a where clause
 			logger.info('Successfully revived all streak counters');
+		} catch (err) {
+			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
+		}
+	}
+
+	static async setReviveNumberOfDays(userId, reviveNumberOfDays) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			await Counters.update(
+				{ reviveNumberOfDays: reviveNumberOfDays }, // Or should this use Op.col?
+				{ where : { userId: userId } });
+			logger.info(`Successfully set reviveNumberOfDays to ${reviveNumberOfDays} ${Counters.name}.userId=${userId}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
+		}
+	}
+
+	static async setNumberOfDaysToReviveNumberOfDays(userId) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			await Counters.update(
+				{ numberOfDays: Sequelize.col('reviveNumberOfDays') }, // Or should this use Op.col?
+				{ where : { userId: userId } });
+			logger.info(`Successfully copied reviveNumberOfDays to numberOfDays for ${Counters.name}.userId=${userId}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
+		}
+	}
+
+	static async setReviveNumberOfDaysToNumberOfDays(userId, username) {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			await Counters.update(
+				{ reviveNumberOfDays: Sequelize.col('numberOfDays') }, // Or should this use Op.col?
+				{ where : { userId: userId } });
+			logger.info(`Successfully copied numberOfDays to reviveNumberOfDays for ${Counters.name}.userId=${userId}`);
 		} catch (err) {
 			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
 			logger.error(errorMessageContent);

@@ -20,16 +20,16 @@ module.exports = {
 			if (authenticate.isAdmin(adminMember)) {
 				await Database.setAllStreakCountersRevive(true);
 				replyMessageContent = 'Successfully revived everyone\'s streaks';
-				console.debug(replyMessageContent);
+				logger.debug(replyMessageContent);
 				await interaction.reply(replyMessageContent);
 			} else {
 				replyMessageContent = 'You must be an admin to revive everyone\'s streaks';
-				console.warn(replyMessageContent);
+				logger.warn(replyMessageContent);
 				await interaction.reply({ content: replyMessageContent, ephemeral: true });
 			}
 		} catch (err) {
 			replyMessageContent = 'Unable to add revive everyone\' streaks';
-			console.error(replyMessageContent);
+			logger.error(replyMessageContent);
 			await interaction.reply({ content: replyMessageContent, ephemeral: true });
 		}
 	},

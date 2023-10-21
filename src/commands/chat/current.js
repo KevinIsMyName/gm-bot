@@ -19,7 +19,7 @@ module.exports = {
 	'description': 'Show your current streak status',
 	'handler': async function(interaction) {
 		const messageAuthorUserId = interaction.author.id;
-		const replyMessageContent = formatSingleStreak(await Database.getStreakCounterByUserId(messageAuthorUserId));
+		const replyMessageContent = formatSingleStreak(await Database.getStreakCounter(messageAuthorUserId));
 		logger.debug(replyMessageContent);
 		await interaction.reply(replyMessageContent);
 		logger.info('Successfully displayed current');

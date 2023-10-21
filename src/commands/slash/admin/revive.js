@@ -5,6 +5,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const Database = require('../../../database/database');
 const authenticate = require('../../../utils/authenticate');
 const LoggerFactory = require('../../../utils/logger');
+const Streak = require('../../../utils/Streak');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 
@@ -24,10 +25,16 @@ module.exports = {
 		let replyMessageContent = '';
 		try {
 			if (authenticate.isAdmin(adminMember)) {
-				await Database.setStreakCounterRevive(reviveUserId, true);
-				replyMessageContent = `Successfully revived ${reviveUsername}'s streak`;
-				logger.info(replyMessageContent);
-				await interaction.reply(replyMessageContent);
+				if (await Streak.isAlive(reviveUserId)) {
+					replyMessageContent = `Revived ${reviveUsername}'s streak`;
+					await Database.setStreakCounterRevive(reviveUserId, true);
+					logger.warn(replyMessageContent);
+					await interaction.reply(replyMessageContent);
+				} else {
+					replyMessageContent = `${reviveUsername}'s streak cannot be revived because it is not dead`;
+					logger.info(replyMessageContent);
+					await interaction.reply(replyMessageContent);
+				}
 			} else {
 				replyMessageContent = 'You must be an admin to revive other user\'s streaks';
 				logger.warn(replyMessageContent);
