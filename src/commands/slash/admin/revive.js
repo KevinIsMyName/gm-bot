@@ -5,7 +5,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const Database = require('../../../database/database');
 const authenticate = require('../../../utils/authenticate');
 const LoggerFactory = require('../../../utils/logger');
-const Streak = require('../../../utils/Streak');
+const Streak = require('../../../utils/streak');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 

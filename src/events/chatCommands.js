@@ -5,7 +5,7 @@ const { Events } = require('discord.js');
 
 const Database = require('../database/database');
 const LoggerFactory = require('../utils/logger');
-const Streak = require('../utils/Streak');
+const Streak = require('../utils/streak');
 const { channelIds, prefix, regexArgs } = require('../../config.json');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));

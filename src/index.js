@@ -5,7 +5,7 @@ const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const cron = require('cron');
 
 const Database = require('./database/database');
-const Streak = require('./utils/Streak');
+const Streak = require('./utils/streak');
 const LoggerFactory = require('./utils/logger');
 const { timeZone, token } = require('../config.json');
 
