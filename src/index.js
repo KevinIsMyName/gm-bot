@@ -2,12 +2,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const cron = require('node-cron');
+const cron = require('cron');
 
 const Database = require('./database/database');
 const Streak = require('./utils/Streak');
 const LoggerFactory = require('./utils/logger');
-const { token } = require('../config.json');
+const { timeZone, token } = require('../config.json');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 
@@ -63,6 +63,17 @@ cron.schedule('0 0 * * *', () => {
 	logger.info(`Starting cron job. Current datetime is ${new Date().toISOString}`);
 	Streak.updateDeadStreakCounters();
 });
+
+
+const job = new cron.CronJob('00 00 00 * * *',
+	function() {
+		logger.info(`Starting cron job. Current datetime is ${new Date().toISOString}`);
+		Streak.updateDeadStreakCounters();
+	},
+	null,
+	true,
+	timeZone,
+);
 
 // Log in to Discord with your client's token
 client.login(token);
