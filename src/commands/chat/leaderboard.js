@@ -23,8 +23,8 @@ function formatLeaderboard(streakRows) {
 	let response = '';
 	let i = 1;
 	streakRows.forEach(streak => {
-		response += `${streakToEmoji.convertStreakStatusToEmoji(streak)} `;
-		response += `\` ${String(i).padStart(numDigits, ' ')} |\` ${streak.username} \`:\` ${streak.numberOfDays} days\n`;
+		response += `${streakToEmoji.convertStreakStatusToEmoji(streak)}`;
+		response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${streak.username}** (${streak.numberOfDays} days)\n`;
 		i += 1;
 	});
 	return response;

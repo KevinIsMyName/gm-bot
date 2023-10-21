@@ -119,9 +119,10 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			const results = await Counters.findAll({ order: [
-				['numberOfDays', 'DESC']],
+				['numberOfDays', 'DESC'],
+				['updatedAt', 'DESC']],
 			});
-			logger.info(`Successully got all ${Counters.name} by ORDER DESC`);
+			logger.info(`Successully got all ${Counters.name} by ORDER BY numberOfDays DESC, updatedAt DESC`);
 			return results;
 		} catch (err) {
 			const errorMessageContent = `Something went wrong when getting all ${Counters.name}`;
