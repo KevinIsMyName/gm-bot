@@ -15,16 +15,23 @@ function countDigits(n) {
 	return count;
 }
 
-function formatLeaderboard(streakRows) {
-	if (streakRows.length === 0) return 'There are currently no streaks.\n';
+function formatLeaderboard(streakCounters) {
+	if (streakCounters.length === 0) return 'There are currently no streaks.\n';
 
-	const numStreaks = streakRows.length;
+	const numStreaks = streakCounters.length;
 	const numDigits = countDigits(numStreaks);
 	let response = '';
 	let i = 1;
-	streakRows.forEach(streak => {
-		response += `${streakToEmoji.convertStreakStatusToEmoji(streak)}`;
-		response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${streak.username}** (${streak.numberOfDays} days)\n`;
+	const prevStreak = { rank: i, numOfDays: null };
+	streakCounters.forEach(streakCounter => {
+		response += `${streakToEmoji.convertStreakStatusToEmoji(streakCounter)}`;
+		if (prevStreak.numOfDays === streakCounter.numberOfDays) {
+			response += `\` ${String(prevStreak.rank).padStart(numDigits, ' ')} |\` **${streakCounter.username}** (${streakCounter.numberOfDays} days)\n`;
+		} else {
+			response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${streakCounter.username}** (${streakCounter.numberOfDays} days)\n`;
+			prevStreak.rank = i;
+			prevStreak.numOfDays = streakCounter.numberOfDays;
+		}
 		i += 1;
 	});
 	return response;
