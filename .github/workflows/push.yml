@@ -1,0 +1,19 @@
+on: 
+  push: master
+jobs:
+  build:
+    name: build
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - name: Install Yarn
+      run: npm install -g yarn
+    - name: Install packages
+      run: yarn install --frozen-lockfile
+    - name: Load config from GitHub secrets
+      run: |
+        echo "${{ secrets.CONFIG }}" > config.json
