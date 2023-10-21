@@ -71,3 +71,6 @@ const job = new cron.CronJob('00 00 00 * * *',
 
 // Log in to Discord with your client's token
 client.login(token);
+
+// Start database updater
+job.start();

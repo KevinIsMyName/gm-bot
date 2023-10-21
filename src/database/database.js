@@ -220,7 +220,7 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			await Counters.update(
-				{ reviveNumberOfDays: reviveNumberOfDays }, // Or should this use Op.col?
+				{ reviveNumberOfDays: reviveNumberOfDays },
 				{ where : { userId: userId } });
 			logger.info(`Successfully set reviveNumberOfDays to ${reviveNumberOfDays} ${Counters.name}.userId=${userId}`);
 		} catch (err) {
@@ -235,7 +235,7 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			await Counters.update(
-				{ numberOfDays: Sequelize.col('reviveNumberOfDays') }, // Or should this use Op.col?
+				{ numberOfDays: Sequelize.col('reviveNumberOfDays') },
 				{ where : { userId: userId } });
 			logger.info(`Successfully copied reviveNumberOfDays to numberOfDays for ${Counters.name}.userId=${userId}`);
 		} catch (err) {
@@ -250,7 +250,7 @@ class Database {
 		const Counters = Database.getStreakCounterTable();
 		try {
 			await Counters.update(
-				{ reviveNumberOfDays: Sequelize.col('numberOfDays') }, // Or should this use Op.col?
+				{ reviveNumberOfDays: Sequelize.col('numberOfDays') },
 				{ where : { userId: userId } });
 			logger.info(`Successfully copied numberOfDays to reviveNumberOfDays for ${Counters.name}.userId=${userId}`);
 		} catch (err) {
