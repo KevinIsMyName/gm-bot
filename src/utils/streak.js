@@ -123,8 +123,8 @@ class Streak {
 				updatedStreakCounters.push({ numberOfDays: 0, userId: row.userId, reviveNumberOfDays: row.numberOfDays });
 			}
 		});
-		if (updatedStreakCounters) Database.bulkUpdateStreakCounters(updatedStreakCounters);
-		logger.info('Finished updating all dead streaks');
+		if (updatedStreakCounters.length !== 0) Database.bulkUpdateStreakCounters(updatedStreakCounters);
+		logger.info(`Finished updating all dead streaks of ${JSON.stringify(updatedStreakCounters)}`);
 	}
 }
 
