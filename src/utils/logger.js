@@ -23,8 +23,8 @@ class LoggerFactory {
 			defaultMeta: { service: userService },
 			transports: [
 				new winston.transports.File({ filename: `logs/${userService}-error.log`, level: 'error' }),
-				new winston.transports.File({ filename: `logs/${userService}.log` }),
-				new winston.transports.File({ filename: 'logs/all.log' }),
+				new winston.transports.File({ filename: `logs/${userService}.log`, level: 'debug' }),
+				new winston.transports.File({ filename: 'logs/all.log', level: 'debug' }),
 				new winston.transports.Console({ format: winston.format.simple(), level: 'info' }),
 			],
 		});
