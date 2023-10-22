@@ -111,16 +111,16 @@ class Streak {
 		// BUG: Might not be same timezone as Discord's timestamps
 		const currentTime = new Date().getTime();
 
-		const streakCounters = await Database.getAllAliveStreakCounters();
+		const streakCounterRows = await Database.getAllAliveStreakCounters();
 		const updatedStreakCounters = [];
-		streakCounters.forEach(async (streakRow) => {
-			const userId = streakRow.userId;
+		streakCounterRows.forEach(async (row) => {
+			const userId = row.userId;
 			const lastTimestamp = await Database.getLastTimestamp(userId);
 			if (oneDayAfterAnother(currentTime, lastTimestamp) || sameDate(currentTime, lastTimestamp)) {
-				logger.info(`${streakRow.username}'s streak is healthy at ${streakRow.numberOfDays}, should not be reset.`);
+				logger.info(`${row.username}'s streak is healthy at ${row.numberOfDays}, should not be reset.`);
 			} else {
-				logger.info(`${streakRow.username}'s streak broke, resetting to 0.`);
-				updatedStreakCounters.push({ numberOfDays: 0, userId: streakRow.userId, reviveNumberOfDays: streakRow.numberOfDays });
+				logger.info(`${row.username}'s streak broke, resetting to 0.`);
+				updatedStreakCounters.push({ numberOfDays: 0, userId: row.userId, reviveNumberOfDays: row.numberOfDays });
 			}
 		});
 		if (updatedStreakCounters) Database.bulkUpdateStreakCounters(updatedStreakCounters);

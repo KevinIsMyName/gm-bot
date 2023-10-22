@@ -15,22 +15,23 @@ function countDigits(n) {
 	return count;
 }
 
-function formatLeaderboard(streakCounters) {
-	if (streakCounters.length === 0) return 'There are currently no streaks.\n';
+function formatLeaderboard(streakCounterRows) {
+	if (streakCounterRows.length === 0) return 'There are currently no streaks.\n';
 
-	const numStreaks = streakCounters.length;
+	const numStreaks = streakCounterRows.length;
 	const numDigits = countDigits(numStreaks);
 	let response = '';
 	let i = 1;
 	const prevStreak = { rank: i, numOfDays: null };
-	streakCounters.forEach(streakCounter => {
-		response += `${streakToEmoji.convertStreakStatusToEmoji(streakCounter)}`;
-		if (prevStreak.numOfDays === streakCounter.numberOfDays) {
-			response += `\` ${String(prevStreak.rank).padStart(numDigits, ' ')} |\` **${streakCounter.username}** (${streakCounter.numberOfDays} days)\n`;
+	streakCounterRows.forEach(row => {
+		response += `${streakToEmoji.convertStreakStatusToEmoji(row)}`;
+		if (prevStreak.numOfDays === row.numberOfDays) {
+			response += `\` ${String(prevStreak.rank).padStart(numDigits, ' ')} |\` **${row.username}** (${row.numberOfDays} days)\n`;
 		} else {
-			response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${streakCounter.username}** (${streakCounter.numberOfDays} days)\n`;
+			if (row.numberOfDays === 0) response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${row.username}** (was ${row.reviveNumberOfDays} days)\n`;
+			else response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${row.username}** (${row.numberOfDays} days)\n`;
 			prevStreak.rank = i;
-			prevStreak.numOfDays = streakCounter.numberOfDays;
+			prevStreak.numOfDays = row.numberOfDays;
 		}
 		i += 1;
 	});
