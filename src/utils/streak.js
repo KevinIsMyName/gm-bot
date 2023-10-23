@@ -42,7 +42,6 @@ class Streak {
 		const createdTimestamp = this.discordInteraction.createdTimestamp;
 		logger.debug(`Received message of ${messageContent} from ${this.userId} at ${createdTimestamp}`);
 
-		// Handle new streaks
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
 		const streakCounter = await Database.getStreakCounter(this.userId);
 

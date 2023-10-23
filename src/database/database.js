@@ -75,8 +75,7 @@ class Database {
 							numberOfDays: numberOfDays,
 						},
 						{ where: { userId: userId } });
-					logger.info(`Successfully updated ${Counters.name}.username=${opts['username']}
-						and ${Counters.name}.numberOfDays=${numberOfDays} for userId=${userId}`);
+					logger.info(`Successfully updated ${Counters.name}.username=${opts['username']} and ${Counters.name}.numberOfDays=${numberOfDays} for userId=${userId}`);
 				} else {
 					await Counters.update(
 						{ numberOfDays: numberOfDays },
@@ -106,6 +105,7 @@ class Database {
 		try {
 			const result = await Counters.findOne({ where: { userId: userId } });
 			logger.info(`Successfully got ${Counters.name}.userId=${userId}}`);
+			logger.debug(`Successfully got ${Counters.name}.userId=${userId}} with result ${JSON.stringify(result)}`);
 			return result;
 		} catch (err) {
 			const errorMessageContent = `Something went wrong when getting ${Counters.name}.userId=${userId}`;
