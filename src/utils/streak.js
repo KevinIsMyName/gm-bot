@@ -50,6 +50,7 @@ class Streak {
 		if (streakCounter.numberOfDays === 0) {
 			logger.info(`Streak was broken and is now starting at 1 for ${this.username}`);
 			this.resetStreak(1);
+			return 'newStreak';
 		} else if (oneDayAfterAnother(lastTimestamp, createdTimestamp)) {
 			await this.continue();
 			logger.info(`Streak continues for ${this.username}`);
@@ -65,7 +66,7 @@ class Streak {
 		} else {
 			logger.error(`Unexpected condition, don't know how to process message ${messageContent} from ${this.userId} at ${createdTimestamp}.`);
 			this.resetStreak(1);
-			return 'newStreak';
+			return null;
 		}
 	}
 
