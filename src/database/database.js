@@ -158,7 +158,7 @@ class Database {
 	static async bulkUpdateStreakCounters(rows) {
 		const Counters = Database.getStreakCounterTable();
 		try {
-			const results = await Counters.bulkCreate(rows, { updateOnDuplicate: ['userId'], validate: true });
+			const results = await Counters.bulkCreate(rows, { updateOnDuplicate: ['userId', 'numberOfDays', 'reviveNumberOfDays'], validate: true });
 			logger.info(`Successfully bulk-created/updated ${Counters.name} with rows ${JSON.stringify(rows)}`);
 			return results;
 		} catch (err) {

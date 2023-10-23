@@ -113,17 +113,17 @@ class Streak {
 
 		const streakCounterRows = await Database.getAllAliveStreakCounters();
 		const updatedStreakCounters = [];
-		streakCounterRows.forEach(async (row) => {
+		for (const row of streakCounterRows) {
 			const userId = row.userId;
 			const lastTimestamp = await Database.getLastTimestamp(userId);
 			if (oneDayAfterAnother(currentTime, lastTimestamp) || sameDate(currentTime, lastTimestamp)) {
-				logger.debug(`${row.username}'s streak is healthy at ${row.numberOfDays}, should not be reset.`);
+				console.debug(`${row.username}'s streak is healthy at ${row.numberOfDays}, should not be reset.`);
 			} else {
-				logger.info(`${row.username}'s streak broke, resetting to 0.`);
+				console.info(`${row.username}'s streak broke, resetting to 0.`);
 				updatedStreakCounters.push({ numberOfDays: 0, userId: row.userId, reviveNumberOfDays: row.numberOfDays });
 			}
-		});
-		if (updatedStreakCounters.length !== 0) Database.bulkUpdateStreakCounters(updatedStreakCounters);
+		}
+		if (updatedStreakCounters.length !== 0) await Database.bulkUpdateStreakCounters(updatedStreakCounters);
 		logger.info(`Finished updating all dead streaks of ${JSON.stringify(updatedStreakCounters)}`);
 	}
 }
