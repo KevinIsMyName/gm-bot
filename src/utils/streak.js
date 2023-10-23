@@ -47,7 +47,10 @@ class Streak {
 		const streakCounter = await Database.getStreakCounter(this.userId);
 
 		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
-		if (oneDayAfterAnother(lastTimestamp, createdTimestamp)) {
+		if (streakCounter.numberOfDays === 0) {
+			logger.info(`Streak was broken and is now starting at 1 for ${this.username}`);
+			this.resetStreak(1);
+		} else if (oneDayAfterAnother(lastTimestamp, createdTimestamp)) {
 			await this.continue();
 			logger.info(`Streak continues for ${this.username}`);
 			return 'continueStreak';
@@ -60,7 +63,7 @@ class Streak {
 			logger.info(`Streak for ${this.username} used a revive`);
 			return 'continueStreak';
 		} else {
-			logger.info(`Streak was broken and is now starting at 1 for ${this.username}`);
+			logger.error(`Unexpected condition, don't know how to process message ${messageContent} from ${this.userId} at ${createdTimestamp}.`);
 			this.resetStreak(1);
 			return 'newStreak';
 		}
