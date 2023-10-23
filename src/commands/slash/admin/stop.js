@@ -14,6 +14,7 @@ module.exports = {
 		.setDescription('Stops the bot'),
 	async execute(interaction) {
 		const adminMember = interaction.member;
+		const adminUsername = interaction.user.username;
 
 		try {
 			if (authenticate.isAdmin(adminMember)) {
@@ -22,7 +23,7 @@ module.exports = {
 				process.exit(0);
 
 			} else {
-				logger.warn('Non admin attempted to stop the bot');
+				logger.info(`${adminUsername} attempted to stop the bot but is not an admin`);
 				await interaction.reply({ content: 'How about you stop?! 😡', ephemeral: true });
 			}
 		} catch (err) {
