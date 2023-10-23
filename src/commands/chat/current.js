@@ -21,7 +21,7 @@ module.exports = {
 		const messageAuthorUserId = interaction.author.id;
 		const replyMessageContent = formatSingleStreak(await Database.getStreakCounter(messageAuthorUserId));
 		logger.debug(replyMessageContent);
-		await interaction.reply(replyMessageContent);
+		await interaction.reply({ content: replyMessageContent, ephemeral: true });
 		logger.info('Successfully displayed current');
 	},
 };
