@@ -60,9 +60,9 @@ for (const file of eventFiles) {
 
 // Load database updater daily as a cron job
 const job = new cron.CronJob('00 00 00 * * *',
-	function() {
-		logger.info(`Starting cron job. Current datetime is ${new Date().toISOString}`);
-		Streak.updateDeadStreakCounters();
+	async function() {
+		logger.info(`Starting cron job. Current datetime is ${new Date().toLocaleString('en-US', { timeZone: timeZone })}`);
+		await Streak.updateDeadStreakCounters();
 	},
 	null,
 	true,
