@@ -121,9 +121,10 @@ class Streak {
 			const userId = row.userId;
 			const lastTimestamp = await Database.getLastTimestamp(userId);
 			if (oneDayAfterAnother(currentTime, lastTimestamp) || sameDate(currentTime, lastTimestamp)) {
-				console.debug(`${row.username}'s streak is healthy at ${row.numberOfDays}, should not be reset.`);
+				logger.debug(`${row.username}'s streak is healthy at ${row.numberOfDays}, should not be reset.`);
 			} else {
-				console.info(`${row.username}'s streak broke, resetting to 0.`);
+				logger.info(`${row.username}'s streak broke, resetting to 0.`);
+				logger.debug(`${currentTime} and ${lastTimestamp} means the streak broke.`);
 				updatedStreakCounters.push({ numberOfDays: 0, userId: row.userId, reviveNumberOfDays: row.numberOfDays });
 			}
 		}
