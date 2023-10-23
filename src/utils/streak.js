@@ -40,14 +40,18 @@ class Streak {
 	async processMessage() {
 		const messageContent = this.discordInteraction.content;
 		const createdTimestamp = this.discordInteraction.createdTimestamp;
-		logger.debug(`Received message of ${messageContent} from ${this.userIid} at ${createdTimestamp}`);
+		logger.debug(`Received message of ${messageContent} from ${this.userId} at ${createdTimestamp}`);
 
 		// Handle new streaks
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
 		const streakCounter = await Database.getStreakCounter(this.userId);
 
 		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
-		if (streakCounter.numberOfDays === 0) {
+		if (!streakCounter) {
+			logger.info(`Streak does not exist and is now starting at 1 for ${this.username}`);
+			this.resetStreak(1);
+			return 'newStreak';
+		} else if (streakCounter.numberOfDays === 0) {
 			logger.info(`Streak was broken and is now starting at 1 for ${this.username}`);
 			this.resetStreak(1);
 			return 'newStreak';
@@ -58,7 +62,7 @@ class Streak {
 		} else if (sameDate(lastTimestamp, createdTimestamp)) {
 			logger.info(`Duplicate streak message for ${this.username}`);
 			return 'sameDay';
-		} else if (streakCounter && streakCounter.awaitingRevive) {
+		} else if (streakCounter.awaitingRevive) {
 			await this.useRevive();
 			await this.increment();
 			logger.info(`Streak for ${this.username} used a revive`);
