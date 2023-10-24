@@ -26,12 +26,13 @@ function formatLeaderboard(streakCounterRows) {
 	streakCounterRows.forEach(row => {
 		response += `${streakToEmoji.convertStreakStatusToEmoji(row)}`;
 		if (prevStreak.numOfDays === row.numberOfDays) {
-			response += `\` ${String(prevStreak.rank).padStart(numDigits, ' ')} |\` **${row.username}** (${row.numberOfDays} days)\n`;
+			response += `\` ${String(prevStreak.rank).padStart(numDigits, ' ')} |\` `;
 		} else {
-			response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${row.username}** (${(row.numberOfDays === 0) ? `was ${row.reviveNumberOfDays}` : `${row.numberOfDays}`} days)\n`;
+			response += `\` ${String(i).padStart(numDigits, ' ')} |\` `;
 			prevStreak.rank = i;
 			prevStreak.numOfDays = row.numberOfDays;
 		}
+		response += `**${row.username}** (${(row.numberOfDays === 0) ? `was ${row.reviveNumberOfDays}` : `${row.numberOfDays}`} days)\n`;
 		i += 1;
 	});
 	return response;
