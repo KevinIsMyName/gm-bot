@@ -22,7 +22,7 @@ function getChatCommands() {
 				description: commandConfig.description || null,
 				handler: commandConfig.handler,
 			};
-			logger.info(`Sucessfully got chat command (${commandConfig.keyword}) for ${filePath}`);
+			logger.info(`Successfully got chat command (${commandConfig.keyword}) for ${filePath}`);
 		} else {
 			logger.warn(`The chat command at ${filePath} is missing a required "keyword" or "handler" property.`);
 		}
