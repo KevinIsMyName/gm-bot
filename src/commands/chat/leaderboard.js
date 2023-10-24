@@ -28,7 +28,7 @@ function formatLeaderboard(streakCounterRows) {
 		if (prevStreak.numOfDays === row.numberOfDays) {
 			response += `\` ${String(prevStreak.rank).padStart(numDigits, ' ')} |\` **${row.username}** (${row.numberOfDays} days)\n`;
 		} else {
-			response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${row.username}** (${(row.numberOfDays === 0) ? `was ${row.reviveNumberOfDays - 1}` : `${row.numberOfDays}`} days)\n`;
+			response += `\` ${String(i).padStart(numDigits, ' ')} |\` **${row.username}** (${(row.numberOfDays === 0) ? `was ${row.reviveNumberOfDays}` : `${row.numberOfDays}`} days)\n`;
 			prevStreak.rank = i;
 			prevStreak.numOfDays = row.numberOfDays;
 		}
