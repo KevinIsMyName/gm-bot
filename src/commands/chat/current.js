@@ -11,7 +11,7 @@ function formatSingleStreak(streakCounter) {
 	const responseEmojiPrefix = streakToEmoji.convertStreakStatusToEmoji(streakCounter);
 	if (streakCounter.awaitingRevive) return `${responseEmojiPrefix} ${streakCounter.username} is currently on a **revived** ${streakCounter.numberOfDays} days streak.`;
 	else if (streakCounter.numberOfDays > 0) return `${responseEmojiPrefix} ${streakCounter.username} is currently on a ${streakCounter.numberOfDays} days streak.`;
-	else return `${responseEmojiPrefix} ${streakCounter.username} currently has no streak.`;
+	else return `${responseEmojiPrefix} ${streakCounter.username} currently has no ongoing streak.`;
 }
 
 module.exports = {
