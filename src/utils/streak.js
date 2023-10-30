@@ -121,6 +121,9 @@ class Streak {
 		const streakCounterRows = await Database.getAllAliveStreakCounters();
 		const updatedStreakCounters = [];
 		for (const row of streakCounterRows) {
+			if (row.numberOfDays === 0) {
+				continue;
+			}
 			const userId = row.userId;
 			const lastTimestamp = await Database.getLastTimestamp(userId);
 			if (oneDayAfterAnother(currentTime, lastTimestamp) || sameDate(currentTime, lastTimestamp)) {
