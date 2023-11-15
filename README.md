@@ -21,3 +21,6 @@ Copy [`sampleconfig.json`](./sampleconfig.json) to `config.json`and fill in the 
 ```sh
 yarn start
 ```
+
+## License
+Distributed under the MIT Licennse. See [`LICENSE`](./LICENSE) for more information.
