@@ -26,12 +26,12 @@ module.exports = {
 		try {
 			if (authenticate.isAdmin(adminMember)) {
 				if (await Streak.isAlive(reviveUserId)) {
-					replyMessageContent = `Revived ${reviveUsername}'s streak`;
+					replyMessageContent = `Revived **${reviveUsername}**'s streak`;
 					await Database.setStreakCounterRevive(reviveUserId, true);
 					logger.warn(replyMessageContent);
 					await interaction.reply(replyMessageContent);
 				} else {
-					replyMessageContent = `${reviveUsername}'s streak cannot be revived because it is not dead`;
+					replyMessageContent = `**${reviveUsername}**'s streak cannot be revived because it is not dead`;
 					logger.info(replyMessageContent);
 					await interaction.reply(replyMessageContent);
 				}
@@ -41,7 +41,7 @@ module.exports = {
 				await interaction.reply({ content: replyMessageContent, ephemeral: true });
 			}
 		} catch (err) {
-			replyMessageContent = `Unable to add revive ${reviveUsername}'s streak`;
+			replyMessageContent = `Unable to add revive **${reviveUsername}**'s streak`;
 			logger.error(replyMessageContent);
 			logger.error(err);
 			await interaction.reply({ content: replyMessageContent, ephemeral: true });
