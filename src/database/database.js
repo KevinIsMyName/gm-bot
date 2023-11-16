@@ -129,10 +129,34 @@ class Database {
 					['numberOfDays', 'DESC'],
 					['updatedAt', 'ASC']],
 			});
-			logger.info(`Successully got all ${Counters.name}`);
+			logger.info(`Successully got all alive ${Counters.name}`);
 			return results;
 		} catch (err) {
 			const errorMessageContent = `Something went wrong when getting all alive ${Counters.name}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
+		}
+	}
+
+	static async getAllDeadStreakCounters() {
+		const Counters = Database.getStreakCounterTable();
+		try {
+			const results = await Counters.findAll({
+				where: {
+					[Sequelize.Op.and]: [
+						{ numberOfDays: 0 },
+						{ awaitingRevive: false },
+					],
+				},
+				order: [
+					['updatedAt', 'ASC'],
+					['reviveNumberOfDays', 'DESC']],
+			});
+			logger.info(`Successully got all dead ${Counters.name}`);
+			return results;
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when getting all dead ${Counters.name}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
 			return Error(errorMessageContent);
