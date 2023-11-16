@@ -115,23 +115,6 @@ class Database {
 		}
 	}
 
-	static async getAllStreakCounters() {
-		const Counters = Database.getStreakCounterTable();
-		try {
-			const results = await Counters.findAll({ order: [
-				['numberOfDays', 'DESC'],
-				['updatedAt', 'ASC']],
-			});
-			logger.info(`Successully got all ${Counters.name} by ORDER BY numberOfDays DESC, updatedAt ASC`);
-			return results;
-		} catch (err) {
-			const errorMessageContent = `Something went wrong when getting all ${Counters.name}`;
-			logger.error(errorMessageContent);
-			logger.error(err);
-			return Error(errorMessageContent);
-		}
-	}
-
 	static async getAllAliveStreakCounters() {
 		const Counters = Database.getStreakCounterTable();
 		try {
@@ -143,7 +126,8 @@ class Database {
 					],
 				},
 				order: [
-					['numberOfDays', 'DESC']],
+					['numberOfDays', 'DESC'],
+					['updatedAt', 'ASC']],
 			});
 			logger.info(`Successully got all ${Counters.name}`);
 			return results;

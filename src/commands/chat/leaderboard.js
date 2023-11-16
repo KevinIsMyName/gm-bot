@@ -32,7 +32,7 @@ function formatLeaderboard(streakCounterRows) {
 			prevStreak.rank = i;
 			prevStreak.numOfDays = row.numberOfDays;
 		}
-		response += `**${row.username}** (${(row.numberOfDays === 0) ? `was ${row.reviveNumberOfDays}` : `${row.numberOfDays}`} days)\n`;
+		response += `**${row.username}** (${row.numberOfDays} days)\n`;
 		i += 1;
 	});
 	return response;
@@ -40,9 +40,9 @@ function formatLeaderboard(streakCounterRows) {
 
 module.exports = {
 	'keyword': 'leaderboard',
-	'description': 'Show everyone\'s streaks\' status',
+	'description': 'Show all alive streaks',
 	'handler': async function(interaction) {
-		const replyMessageContent = formatLeaderboard(await Database.getAllStreakCounters());
+		const replyMessageContent = formatLeaderboard(await Database.getAllAliveStreakCounters());
 		logger.debug(replyMessageContent);
 		await interaction.reply(replyMessageContent);
 		logger.info('Successfully displayed leaderboard');
