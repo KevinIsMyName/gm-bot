@@ -16,6 +16,8 @@ module.exports = {
 		const adminMember = interaction.member;
 		const adminUsername = interaction.user.username;
 
+		logger.info(`${adminMember.id} used /stop`);
+
 		try {
 			if (authenticate.isAdmin(adminMember)) {
 				await interaction.reply('Good night 😴');

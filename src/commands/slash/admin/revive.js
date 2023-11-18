@@ -22,17 +22,19 @@ module.exports = {
 		const reviveUserId = interaction.options.getUser('user').id;
 		const reviveUsername = interaction.options.getUser('user').username;
 
+		logger.info(`${adminMember.id} used /revive`);
+
 		let replyMessageContent = '';
 		try {
 			if (authenticate.isAdmin(adminMember)) {
 				if (await Streak.isAlive(reviveUserId)) {
 					replyMessageContent = `Revived **${reviveUsername}**'s streak`;
 					await Database.setStreakCounterRevive(reviveUserId, true);
-					logger.warn(replyMessageContent);
+					logger.info(replyMessageContent);
 					await interaction.reply(replyMessageContent);
 				} else {
 					replyMessageContent = `**${reviveUsername}**'s streak cannot be revived because it is not dead`;
-					logger.info(replyMessageContent);
+					logger.warn(replyMessageContent);
 					await interaction.reply(replyMessageContent);
 				}
 			} else {
