@@ -19,6 +19,7 @@ module.exports = {
 		}
 
 		try {
+			logger.info(`${interaction.user.username} used /${interaction.commandName}`);
 			await command.execute(interaction);
 		} catch (err) {
 			logger.error(`Error executing ${interaction.commandName}`);

@@ -15,8 +15,6 @@ module.exports = {
 	async execute(interaction) {
 		const adminMember = interaction.member;
 
-		logger.info(`${adminMember.id} used /revive-all`);
-
 		let replyMessageContent = '';
 		try {
 			if (authenticate.isAdmin(adminMember)) {

@@ -22,8 +22,6 @@ module.exports = {
 		const reviveUserId = interaction.options.getUser('user').id;
 		const reviveUsername = interaction.options.getUser('user').username;
 
-		logger.info(`${adminMember.id} used /revive`);
-
 		let replyMessageContent = '';
 		try {
 			if (authenticate.isAdmin(adminMember)) {
