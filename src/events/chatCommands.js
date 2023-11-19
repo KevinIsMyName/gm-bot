@@ -77,6 +77,5 @@ module.exports = {
 
 		if (chatCommands[command]) await chatCommands[command].handler(interaction);
 	},
+	getChatCommands: getChatCommands,
 };
-
-module.exports.getChatCommands = getChatCommands;
