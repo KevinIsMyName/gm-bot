@@ -45,6 +45,7 @@ module.exports = {
 			const [ re, mode ] = args;
 			const pattern = new RegExp(re, mode);
 			if (messageContent.match(pattern)) {
+				logger.info(`Processing ${interaction.author.username}'s message: ${messageContent}`)
 				const streak = new Streak(interaction);
 				const status = await streak.processMessage();
 				let emoji = null;
