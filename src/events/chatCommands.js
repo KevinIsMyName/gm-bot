@@ -70,7 +70,7 @@ module.exports = {
 		}
 
 		// Ignore messages that are not prefixed
-		if (messageContent.length < prefix.length && messageContent.substring(0, prefix.length) != prefix) return;
+		if (messageContent.substring(0, prefix.length) != prefix) return;
 
 		const command = messageContent.substring(prefix.length, messageContent.length);
 		const chatCommands = getChatCommands();
