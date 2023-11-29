@@ -59,7 +59,7 @@ class Streak {
 			return 'sameDay';
 		} else if (streakCounter.awaitingRevive) {
 			await this.useRevive();
-			await this.increment();
+			await this.continue();
 			logger.info(`Streak for ${this.username} used a revive`);
 			return 'continueStreak';
 		} else if (streakCounter.numberOfDays === 0) {
@@ -71,12 +71,6 @@ class Streak {
 			this.resetStreak(1);
 			return null;
 		}
-	}
-
-	async increment() {
-		await Database.incrementStreakCounter(this.userId);
-		await Database.setReviveNumberOfDaysToNumberOfDays(this.userId);
-		logger.debug(`Streak incremented for ${this.username}`);
 	}
 
 	async continue() {
