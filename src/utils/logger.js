@@ -9,7 +9,7 @@ const timezoned = () => {
 };
 
 class LoggerFactory {
-	static getLogger(userService) {
+	static getLogger(name) {
 		const logger = winston.createLogger({
 			level: 'info',
 			format: winston.format.combine(
@@ -20,10 +20,10 @@ class LoggerFactory {
 				winston.format.splat(),
 				winston.format.simple(),
 			),
-			defaultMeta: { service: userService },
+			defaultMeta: { service: name },
 			transports: [
-				new winston.transports.File({ filename: `logs/${userService}-error.log`, level: 'error' }),
-				new winston.transports.File({ filename: `logs/${userService}.log`, level: 'debug' }),
+				new winston.transports.File({ filename: `logs/file/${name}-error.log`, level: 'error' }),
+				new winston.transports.File({ filename: `logs/file/${name}.log`, level: 'debug' }),
 
 				new winston.transports.File({ filename: 'logs/levels/error.log', level: 'error' }),
 				new winston.transports.File({ filename: 'logs/levels/warn.log', level: 'warning' }),
@@ -38,7 +38,7 @@ class LoggerFactory {
 		logger.on('error', (err) => {
 			console.error('Error in logger caught', err);
 		});
-		logger.debug(`Initialized logger for ${userService}`);
+		logger.debug(`Initialized logger for ${name}`);
 		return logger;
 	}
 }
