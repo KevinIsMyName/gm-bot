@@ -13,7 +13,7 @@ module.exports = {
 		.setName('backup')
 		.setDescription('Backup database data'),
 	async execute(interaction) {
-		const authorUsername = interaction.author.username;
+		const invokerUsername = interaction.user.username;
 		const adminMember = interaction.member;
 
 		try {
@@ -29,8 +29,9 @@ module.exports = {
 				return;
 
 			} else {
-				const replyMessageContent = 'You must be an admin to backup the database';
-				await interaction.reply({ content: replyMessageContent, ephemeral: true });
+				const replyMessageContent = ' must be an admin to backup the database';
+				logger.warn(invokerUsername + replyMessageContent);
+				await interaction.reply({ content: 'You' + replyMessageContent, ephemeral: true });
 			}
 		} catch (err) {
 			const replyMessageContent = 'Unable to backup database';

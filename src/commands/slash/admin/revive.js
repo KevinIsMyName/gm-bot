@@ -18,6 +18,7 @@ module.exports = {
 				.setDescription('User whose streak should be revived')
 				.setRequired(true)),
 	async execute(interaction) {
+		const invokerUsername = interaction.user.username;
 		const adminMember = interaction.member;
 		const reviveUserId = interaction.options.getUser('user').id;
 		const reviveUsername = interaction.options.getUser('user').username;
@@ -36,9 +37,9 @@ module.exports = {
 					await interaction.reply(replyMessageContent);
 				}
 			} else {
-				replyMessageContent = 'You must be an admin to revive other user\'s streaks';
-				logger.warn(replyMessageContent);
-				await interaction.reply({ content: replyMessageContent, ephemeral: true });
+				replyMessageContent = ' must be an admin to revive other user\'s streaks';
+				logger.warn(invokerUsername + replyMessageContent);
+				await interaction.reply({ content: 'You' + replyMessageContent, ephemeral: true });
 			}
 		} catch (err) {
 			replyMessageContent = `Unable to add revive **${reviveUsername}**'s streak`;

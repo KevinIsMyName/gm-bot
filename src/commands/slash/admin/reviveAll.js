@@ -13,6 +13,7 @@ module.exports = {
 		.setName('revive-all')
 		.setDescription('Revive everyone\'s streaks'),
 	async execute(interaction) {
+		const invokerUsername = interaction.user.username;
 		const adminMember = interaction.member;
 
 		let replyMessageContent = '';
@@ -23,9 +24,9 @@ module.exports = {
 				logger.debug(replyMessageContent);
 				await interaction.reply(replyMessageContent);
 			} else {
-				replyMessageContent = 'You must be an admin to revive everyone\'s streaks';
-				logger.warn(replyMessageContent);
-				await interaction.reply({ content: replyMessageContent, ephemeral: true });
+				replyMessageContent = ' must be an admin to revive everyone\'s streaks';
+				logger.warn(invokerUsername + replyMessageContent);
+				await interaction.reply({ content: 'You' + replyMessageContent, ephemeral: true });
 			}
 		} catch (err) {
 			replyMessageContent = 'Unable to add revive everyone\' streaks';
