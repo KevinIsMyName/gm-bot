@@ -124,7 +124,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when setting ${Counters.name}.numberOfDays=${numberOfDays} for ${userId}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -139,7 +139,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when getting ${Counters.name}.userId=${userId}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -163,7 +163,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when getting all alive ${Counters.name}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -187,7 +187,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when getting all dead ${Counters.name}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -200,7 +200,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when incrementing ${Counters.name}.userId=${userId}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -214,7 +214,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when updating ${Counters.name} with ${JSON.stringify(rows)}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -236,7 +236,7 @@ class Database {
 			const errorMessageContent = `Something went wrong with reviving ${Counters.name}.userId=${userId}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -249,7 +249,7 @@ class Database {
 			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -264,7 +264,7 @@ class Database {
 			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -279,7 +279,7 @@ class Database {
 			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -294,7 +294,7 @@ class Database {
 			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -312,7 +312,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when adding to ${Messages.name} ${row}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
@@ -331,7 +331,7 @@ class Database {
 			const errorMessageContent = `Something went wrong when getting ${Messages.name}.userId=${userId}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
-			return Error(errorMessageContent);
+			throw Error(errorMessageContent);
 		}
 	}
 
