@@ -63,6 +63,7 @@ const job = new cron.CronJob('00 00 00 * * *',
 	async function() {
 		logger.info(`Starting cron job. Current datetime is ${new Date().toLocaleString('en-US', { timeZone: timeZone })}`);
 		await Streak.refreshAliveStreaks();
+		await Database.backup();
 	},
 	null,
 	true,

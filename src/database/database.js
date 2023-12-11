@@ -2,8 +2,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const Sequelize = require('sequelize');
+const { utcToZonedTime } = require('date-fns-tz');
 
 const LoggerFactory = require('../utils/logger');
+const { timeZone } = require('../../config.json');
 
 const logger = LoggerFactory.getLogger(path.basename(__filename));
 
@@ -21,7 +23,7 @@ class Database {
 			host: 'localhost',
 			dialect: 'sqlite',
 			logging: false,
-			storage: './data/database.sqlite', // SQLite only
+			storage: path.join('./data/', Database.#filename),
 			pool: {
 				max: 5,
 				min: 0,
@@ -53,6 +55,25 @@ class Database {
 		}
 		Database.connection.sync({ alter: true });
 		logger.info('Updated database schemas!');
+	}
+
+	static async backup() {
+		// Create data dir if does not exist
+		!fs.existsSync('./data/backup') && fs.mkdirSync('./data/backup', { recursive: true });
+
+		// Create backup database file
+		const backupFilePath = path.join('./data/backup/', utcToZonedTime(new Date(), timeZone).toISOString() + '.sqlite');
+		if (fs.existsSync(backupFilePath)) {
+			logger.error(`Unable to backup to ${backupFilePath} because it already exists`);
+			return;
+		} else {
+			fs.open(backupFilePath, 'w', (err) => { logger.error(err); });
+		}
+		logger.debug(`Beginning backup to ${backupFilePath}`);
+		fs.copyFile(path.join('./data/', Database.#filename), backupFilePath, (err) => {
+			if (err) logger.error(err);
+			else logger.info(`Completed backup copy to ${backupFilePath}`);
+		});
 	}
 
 	static getStreakCounterTable() {
