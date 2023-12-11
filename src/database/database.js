@@ -23,7 +23,7 @@ class Database {
 			host: 'localhost',
 			dialect: 'sqlite',
 			logging: false,
-			storage: path.join('./data/', Database.#filename),
+			storage: './data/' + Database.#filename,
 			pool: {
 				max: 5,
 				min: 0,
@@ -62,7 +62,7 @@ class Database {
 		!fs.existsSync('./data/backup') && fs.mkdirSync('./data/backup', { recursive: true });
 
 		// Create backup database file
-		const backupFilePath = path.join('./data/backup/', utcToZonedTime(new Date(), timeZone).toISOString() + '.sqlite');
+		const backupFilePath = './data/backup/' + utcToZonedTime(new Date(), timeZone).toISOString();
 		if (fs.existsSync(backupFilePath)) {
 			logger.error(`Unable to backup to ${backupFilePath} because it already exists`);
 			return;
@@ -70,7 +70,7 @@ class Database {
 			fs.open(backupFilePath, 'w', (err) => { logger.error(err); });
 		}
 		logger.debug(`Beginning backup to ${backupFilePath}`);
-		fs.copyFile(path.join('./data/', Database.#filename), backupFilePath, (err) => {
+		fs.copyFile('./data/' + Database.#filename, backupFilePath, (err) => {
 			if (err) logger.error(err);
 			else logger.info(`Completed backup copy to ${backupFilePath}`);
 		});
