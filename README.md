@@ -16,8 +16,6 @@ yarn install
 
 Copy [`sampleconfig.json`](./sampleconfig.json) to `config.json`and fill in the values.
 
-*Optionally, copy [`sampledatabase.sqlite`](./sampledatabase.sqlite)* to `data/database.sqlite` to use a pre-populated database.
-
 ```sh
 yarn start
 ```
