@@ -46,6 +46,7 @@ class Streak {
 		const streakCounter = await Database.getStreakCounter(this.userId);
 
 		if (this.username !== streakCounter.username) {
+			logger.info(`Found new name ${this.username} for ${streakCounter.username}`);
 			this.refreshUsername(streakCounter);
 		}
 
@@ -112,6 +113,7 @@ class Streak {
 
 	async refreshUsername(streakCounter) {
 		await Database.setStreakCounter(this.userId, streakCounter.numberOfDays, { username: this.username });
+		logger.info(`Successfully refreshed username for ${streakCounter.username} to ${this.username}`);
 	}
 
 	static async refreshAliveStreaks() {
