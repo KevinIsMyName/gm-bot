@@ -45,6 +45,10 @@ class Streak {
 		const lastTimestamp = await Database.getLastTimestamp(this.userId);
 		const streakCounter = await Database.getStreakCounter(this.userId);
 
+		if (this.username !== streakCounter.username) {
+			this.refreshUsername(streakCounter);
+		}
+
 		await Database.addStreakMessage(this.userId, messageContent, this.discordInteraction.createdTimestamp);
 		if (!streakCounter) {
 			logger.info(`Streak does not exist and is now starting at 1 for ${this.username}`);
@@ -107,9 +111,12 @@ class Streak {
 		logger.debug(`Streak for ${this.username} is not awaiting revive`);
 	}
 
+	async refreshUsername(streakCounter) {
+		await Database.setStreakCounter(this.userId, streakCounter.numberOfDays, { username: this.username });
+	}
+
 	static async refreshAliveStreaks() {
 		logger.info('Looking for dead streaks');
-		// BUG: Might not be same timezone as Discord's timestamps
 		const currentTime = new Date().getTime();
 
 		const streakCounterRows = await Database.getAllAliveStreakCounters();
