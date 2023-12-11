@@ -61,7 +61,7 @@ class Streak {
 			await this.useRevive();
 			await this.continue();
 			logger.info(`Streak for ${this.username} used a revive`);
-			return 'continueStreak';
+			return 'reviveStreak';
 		} else if (streakCounter.numberOfDays === 0) {
 			logger.info(`Streak was broken and is now starting at 1 for ${this.username}`);
 			this.resetStreak(1);

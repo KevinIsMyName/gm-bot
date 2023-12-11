@@ -50,6 +50,9 @@ module.exports = {
 				const status = await streak.processMessage();
 				let emoji = null;
 				switch (status) {
+					case 'reviveStreak':
+						emoji = '👼';
+						break;
 					case 'continueStreak':
 						emoji = '☀';
 						break;
