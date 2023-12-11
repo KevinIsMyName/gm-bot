@@ -18,8 +18,9 @@ module.exports = {
 
 		try {
 			if (authenticate.isAdmin(adminMember)) {
-				const backupSuccessful = await Database.backup();
-				if (backupSuccessful === 0) {
+				const isBackupSuccessful = await Database.backup();
+				logger.error('Backup return code: ' + isBackupSuccessful);
+				if (isBackupSuccessful === 0) {
 					const replyMessageContent = 'Backup successful';
 					await interaction.reply({ content: replyMessageContent, ephemeral: true });
 					return;
