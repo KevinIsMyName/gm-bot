@@ -67,12 +67,12 @@ class Database {
 			logger.error(`Unable to backup to ${backupFilePath} because it already exists`);
 			return 1;
 		} else {
-			fs.open(backupFilePath, 'w', (err) => { logger.error(err); });
+			fs.open(backupFilePath, 'w', (err) => { logger.error('Unexpected error when creating file: ' + err); });
 		}
 		logger.debug(`Beginning backup to ${backupFilePath}`);
 		const returnCode = fs.copyFile('./data/' + Database.#filename, backupFilePath, (err) => {
 			if (err) {
-				logger.error('Unexpected error: ' + err);
+				logger.error('Unexpected error when copying file: ' + err);
 				return 1;
 			} else {
 				logger.info(`Completed backup copy to ${backupFilePath}`);
