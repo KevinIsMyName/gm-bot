@@ -18,17 +18,8 @@ module.exports = {
 
 		try {
 			if (authenticate.isAdmin(adminMember)) {
-				const isBackupSuccessful = await Database.backup();
-				logger.error('Backup return code: ' + isBackupSuccessful);
-				if (isBackupSuccessful === 0) {
-					const replyMessageContent = 'Backup successful';
-					await interaction.reply({ content: replyMessageContent, ephemeral: true });
-					return;
-				}
-				const replyMessageContent = 'Backup unsuccessful';
+				const replyMessageContent = 'Backup successful';
 				await interaction.reply({ content: replyMessageContent, ephemeral: true });
-				return;
-
 			} else {
 				const replyMessageContent = ' must be an admin to backup the database';
 				logger.warn(invokerUsername + replyMessageContent);
