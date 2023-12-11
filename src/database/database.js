@@ -72,7 +72,7 @@ class Database {
 		logger.debug(`Beginning backup to ${backupFilePath}`);
 		const returnCode = fs.copyFile('./data/' + Database.#filename, backupFilePath, (err) => {
 			if (err) {
-				logger.error(err);
+				logger.error('Unexpected error: ' + err);
 				return 1;
 			} else {
 				logger.info(`Completed backup copy to ${backupFilePath}`);
