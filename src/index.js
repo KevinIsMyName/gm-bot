@@ -62,7 +62,7 @@ for (const file of eventFiles) {
 const job = new cron.CronJob('00 00 00 * * *',
 	async function() {
 		logger.info(`Starting cron job. Current datetime is ${new Date().toLocaleString('en-US', { timeZone: timeZone })}`);
-		await Streak.updateDeadStreakCounters();
+		await Streak.refreshAliveStreaks();
 	},
 	null,
 	true,

@@ -107,7 +107,7 @@ class Streak {
 		logger.debug(`Streak for ${this.username} is not awaiting revive`);
 	}
 
-	static async updateDeadStreakCounters() {
+	static async refreshAliveStreaks() {
 		logger.info('Looking for dead streaks');
 		// BUG: Might not be same timezone as Discord's timestamps
 		const currentTime = new Date().getTime();
