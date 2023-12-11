@@ -65,15 +65,21 @@ class Database {
 		const backupFilePath = './data/backup/' + utcToZonedTime(new Date(), timeZone).toISOString();
 		if (fs.existsSync(backupFilePath)) {
 			logger.error(`Unable to backup to ${backupFilePath} because it already exists`);
-			return;
+			return 1;
 		} else {
 			fs.open(backupFilePath, 'w', (err) => { logger.error(err); });
 		}
 		logger.debug(`Beginning backup to ${backupFilePath}`);
-		fs.copyFile('./data/' + Database.#filename, backupFilePath, (err) => {
-			if (err) logger.error(err);
-			else logger.info(`Completed backup copy to ${backupFilePath}`);
+		const returnCode = fs.copyFile('./data/' + Database.#filename, backupFilePath, (err) => {
+			if (err) {
+				logger.error(err);
+				return 1;
+			} else {
+				logger.info(`Completed backup copy to ${backupFilePath}`);
+				return 0;
+			}
 		});
+		return returnCode;
 	}
 
 	static getStreakCounterTable() {
