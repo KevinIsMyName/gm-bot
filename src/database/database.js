@@ -15,7 +15,7 @@ class Database {
 		// Create data dir if does not exist
 		!fs.existsSync('./data/') && fs.mkdirSync('./data/', { recursive: true });
 		// Create db file if does not exist
-		!fs.existsSync(`./data/${Database.#filename}`) && fs.open(`./data/${Database.#filename}`, 'w', () => { return undefined; });
+		!fs.existsSync(`./data/${Database.#filename}`) && fs.open(`./data/${Database.#filename}`, 'w', (err) => { logger.error(err); });
 
 		Database.#connection = new Sequelize('database', 'user', 'password', {
 			host: 'localhost',
