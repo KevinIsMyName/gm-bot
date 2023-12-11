@@ -83,12 +83,12 @@ class Streak {
 	}
 
 	async enableRevive() {
-		await Database.setStreakCounterRevive(this.userId, true, { username: this.username });
+		await Database.setStreakCountersRevive(this.userId, true, { username: this.username });
 		logger.debug(`Streak for ${this.username} is awaiting revive`);
 	}
 
 	async disableRevive() {
-		await Database.setStreakCounterRevive(this.userId, false, { username: this.username });
+		await Database.setStreakCountersRevive(this.userId, false, { username: this.username });
 		logger.debug(`Streak for ${this.username} is not awaiting revive`);
 	}
 
