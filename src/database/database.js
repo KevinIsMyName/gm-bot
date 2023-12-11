@@ -83,7 +83,7 @@ class Database {
 		return returnCode;
 	}
 
-	static getStreakCounterTable() {
+	static getStreakCountersTable() {
 		return this.schemas['streak_counters'];
 	}
 
@@ -92,7 +92,7 @@ class Database {
 	}
 
 	static async setStreakCounter(userId, numberOfDays, opts) {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
 				logger.debug(`Streak counter exists for ${Counters.name}.userId=${userId}`);
@@ -129,7 +129,7 @@ class Database {
 	}
 
 	static async getStreakCounter(userId) {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			const result = await Counters.findOne({ where: { userId: userId } });
 			logger.info(`Successfully got ${Counters.name}.userId=${userId}`);
@@ -144,7 +144,7 @@ class Database {
 	}
 
 	static async getAllAliveStreakCounters() {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			const results = await Counters.findAll({
 				where: {
@@ -168,7 +168,7 @@ class Database {
 	}
 
 	static async getAllDeadStreakCounters() {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			const results = await Counters.findAll({
 				where: {
@@ -191,8 +191,21 @@ class Database {
 		}
 	}
 
+	static async incrementStreakCounter(userId) {
+		const Counters = Database.getStreakCountersTable();
+		try {
+			await Counters.increment({ numberOfDays: 1 }, { where: { userId: userId } });
+			logger.info(`Successfully incremented numberOfDays by 1 for ${Counters.name}.userId=${userId}`);
+		} catch (err) {
+			const errorMessageContent = `Something went wrong when incrementing ${Counters.name}.userId=${userId}`;
+			logger.error(errorMessageContent);
+			logger.error(err);
+			return Error(errorMessageContent);
+		}
+	}
+
 	static async bulkUpdateStreakCounters(rows) {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			const results = await Counters.bulkCreate(rows, { updateOnDuplicate: ['userId', 'numberOfDays', 'reviveNumberOfDays'], validate: true });
 			logger.info(`Successfully bulk-created/updated ${Counters.name} with rows ${JSON.stringify(rows)}`);
@@ -205,21 +218,8 @@ class Database {
 		}
 	}
 
-	static async incrementStreakCounter(userId) {
-		const Counters = Database.getStreakCounterTable();
-		try {
-			await Counters.increment({ numberOfDays: 1 }, { where: { userId: userId } });
-			logger.info(`Successfully incremented numberOfDays by 1 for ${Counters.name}.userId=${userId}`);
-		} catch (err) {
-			const errorMessageContent = `Something went wrong when incrementing ${Counters.name}.userId=${userId}`;
-			logger.error(errorMessageContent);
-			logger.error(err);
-			return Error(errorMessageContent);
-		}
-	}
-
-	static async setStreakCounterRevive(userId, reviveBool, opts) {
-		const Counters = Database.getStreakCounterTable();
+	static async setStreakCountersRevive(userId, reviveBool, opts) {
+		const Counters = Database.getStreakCountersTable();
 		try {
 			if (await Database.getStreakCounter(userId)) {
 				logger.debug(`Streak counter does exist for ${Counters.name}.userId=${userId}`);
@@ -241,7 +241,7 @@ class Database {
 	}
 
 	static async setAllStreakCountersRevive(bool) {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			await Counters.update({ awaitingRevive: bool }, { where : {} }); // update() requires a where clause
 			logger.info('Successfully revived all streak counters');
@@ -254,7 +254,7 @@ class Database {
 	}
 
 	static async setReviveNumberOfDays(userId, reviveNumberOfDays) {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			await Counters.update(
 				{ reviveNumberOfDays: reviveNumberOfDays },
@@ -269,7 +269,7 @@ class Database {
 	}
 
 	static async setNumberOfDaysToReviveNumberOfDays(userId) {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			await Counters.update(
 				{ numberOfDays: Sequelize.col('reviveNumberOfDays') },
@@ -284,7 +284,7 @@ class Database {
 	}
 
 	static async setReviveNumberOfDaysToNumberOfDays(userId, username) {
-		const Counters = Database.getStreakCounterTable();
+		const Counters = Database.getStreakCountersTable();
 		try {
 			await Counters.update(
 				{ reviveNumberOfDays: Sequelize.col('numberOfDays') },

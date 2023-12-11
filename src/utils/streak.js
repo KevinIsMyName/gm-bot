@@ -72,9 +72,24 @@ class Streak {
 			return 'newStreak';
 		} else {
 			logger.error(`Unexpected condition, don't know how to process message ${messageContent} from ${this.userId} at ${createdTimestamp}.`);
-			this.resetStreak(1);
 			return null;
 		}
+	}
+
+	async useRevive() {
+		await Database.setNumberOfDaysToReviveNumberOfDays(this.userId);
+		await this.disableRevive();
+		logger.debug(`Streak for ${this.username} is now revived`);
+	}
+
+	async enableRevive() {
+		await Database.setStreakCounterRevive(this.userId, true, { username: this.username });
+		logger.debug(`Streak for ${this.username} is awaiting revive`);
+	}
+
+	async disableRevive() {
+		await Database.setStreakCounterRevive(this.userId, false, { username: this.username });
+		logger.debug(`Streak for ${this.username} is not awaiting revive`);
 	}
 
 	async continue() {
@@ -93,22 +108,6 @@ class Streak {
 
 	static async isAlive(userId) {
 		return await Database.getStreakCounter(userId).numberOfDays !== 0;
-	}
-
-	async useRevive() {
-		await Database.setNumberOfDaysToReviveNumberOfDays(this.userId);
-		await this.disableRevive();
-		logger.debug(`Streak for ${this.username} is now revived`);
-	}
-
-	async enableRevive() {
-		await Database.setStreakCounterRevive(this.userId, true, { username: this.username });
-		logger.debug(`Streak for ${this.username} will awaiting revive`);
-	}
-
-	async disableRevive() {
-		await Database.setStreakCounterRevive(this.userId, false, { username: this.username });
-		logger.debug(`Streak for ${this.username} is not awaiting revive`);
 	}
 
 	async refreshUsername(streakCounter) {
