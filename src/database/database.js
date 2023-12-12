@@ -265,22 +265,22 @@ class Database {
 			await Counters.update(
 				{ numberOfDays: Sequelize.col('reviveNumberOfDays') },
 				{ where : { userId: userId } });
-			logger.info(`Successfully copied reviveNumberOfDays to numberOfDays for ${Counters.name}.userId=${userId}`);
+			logger.info(`Successfully copied numberOfDays to reviveNumberOfDays for ${Counters.name}.userId=${userId}`);
 		} catch (err) {
-			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
+			const errorMessageContent = `Something went wrong when copying numberOfDays to reviveNumberOfDays for ${Counters.name}.userId=${userId}`;
 			logger.error(errorMessageContent);
 			logger.error(err);
 			throw Error(errorMessageContent);
 		}
 	}
 
-	static async setReviveNumberOfDaysToNumberOfDays(userId, username) {
+	static async setReviveNumberOfDaysToNumberOfDays(userId) {
 		const Counters = Database.getStreakCountersTable();
 		try {
 			await Counters.update(
 				{ reviveNumberOfDays: Sequelize.col('numberOfDays') },
 				{ where : { userId: userId } });
-			logger.info(`Successfully copied numberOfDays to reviveNumberOfDays for ${Counters.name}.userId=${userId}`);
+			logger.info(`Successfully copied reviveNumberOfDays to numberOfDays for ${Counters.name}.userId=${userId}`);
 		} catch (err) {
 			const errorMessageContent = `Something went wrong with reviving all ${Counters.name}`;
 			logger.error(errorMessageContent);
