@@ -137,7 +137,7 @@ class Streak {
 			}
 		}
 		if (updatedStreakCounters.length !== 0) await Database.bulkUpdateStreakCounters(updatedStreakCounters);
-		logger.info(`Finished updating all dead streaks of ${JSON.stringify(updatedStreakCounters)}`);
+		logger.info(`Finished refreshing all alive streaks of ${JSON.stringify(updatedStreakCounters)}`);
 	}
 }
 

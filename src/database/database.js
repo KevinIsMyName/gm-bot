@@ -17,7 +17,7 @@ class Database {
 		// Create data dir if does not exist
 		!fs.existsSync('./data/') && fs.mkdirSync('./data/', { recursive: true });
 		// Create db file if does not exist
-		!fs.existsSync(`./data/${Database.#filename}`) && fs.open(`./data/${Database.#filename}`, 'w', (err, fd) => { 
+		!fs.existsSync(`./data/${Database.#filename}`) && fs.open(`./data/${Database.#filename}`, 'w', (err, fd) => {
 			if (err) logger.error(err);
 			fs.close(fd);
 		});
@@ -44,7 +44,7 @@ class Database {
 		return Database.#connection;
 	}
 
-	static sync() {
+	static async sync() {
 		const modelsPath = path.join(__dirname, 'models');
 		const modelFiles = fs.readdirSync(modelsPath).filter(file => file.endsWith('.js'));
 
@@ -66,15 +66,12 @@ class Database {
 
 		// Create backup database file
 		const backupFilePath = './data/backup/' + utcToZonedTime(new Date(), timeZone).toISOString();
-		if (fs.existsSync(backupFilePath)) {
-			logger.error(`Unable to backup to ${backupFilePath} because it already exists`);
-			return;
-		} else {
+		if (!fs.existsSync(backupFilePath)) {
 			const fd = fs.openSync(backupFilePath, 'a'); // BUG: This does not create file gracefully on Windows
 			fs.closeSync(fd);
 		}
 		logger.debug(`Beginning backup to ${backupFilePath}`);
-		fs.copyFileSync('./data/' + Database.#filename, backupFilePath, fs.constants.COPYFILE_EXCL);
+		fs.copyFileSync('./data/' + Database.#filename, backupFilePath);
 	}
 
 	static getStreakCountersTable() {
