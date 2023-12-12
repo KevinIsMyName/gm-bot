@@ -66,12 +66,12 @@ class Database {
 
 		// Create backup database file
 		const backupFilePath = './data/backup/' + utcToZonedTime(new Date(), timeZone).toISOString();
-		if (!fs.existsSync(backupFilePath)) {
-			const fd = fs.openSync(backupFilePath, 'a'); // BUG: This does not create file gracefully on Windows
-			fs.closeSync(fd);
-		}
 		logger.debug(`Beginning backup to ${backupFilePath}`);
-		fs.copyFileSync('./data/' + Database.#filename, backupFilePath);
+		try {
+			fs.copyFileSync('./data/' + Database.#filename, backupFilePath, fs.constants.COPYFILE_EXCL);
+		} catch (error) {
+			logger.error('Error when copying database to backup: ' + error);
+		}
 	}
 
 	static getStreakCountersTable() {
