@@ -19,13 +19,14 @@ function unixTimestampToDate(unixTimestamp) {
 function oneDayAfterAnother(unixTimestamp1, unixTimestamp2) {
 	const date1 = unixTimestampToDate(unixTimestamp1);
 	const date2 = unixTimestampToDate(unixTimestamp2);
-	const result = Math.abs(date1.getTime() - date2.getTime()) === (ONE_DAY_IN_SECONDS * 1000);
+	const differenceInMillisecs = Math.abs(date1.getTime() - date2.getTime());
+	const result = (ONE_DAY_IN_SECONDS * 1000) <= differenceInMillisecs && differenceInMillisecs < (2 * ONE_DAY_IN_SECONDS * 1000);
 	logger.debug(`${date1} (${unixTimestamp1}) and ${date2} (${unixTimestamp2}) are ${result ? 'not ' : ''}one day after another`);
 	return result;
 }
 
 function sameDate(unixTimestamp1, unixTimestamp2) {
-	const result = unixTimestampToDate(unixTimestamp1).getTime() == unixTimestampToDate(unixTimestamp2).getTime();
+	const result = unixTimestampToDate(unixTimestamp1).toDateString() == unixTimestampToDate(unixTimestamp2).toDateString();
 	logger.debug(`${unixTimestamp1} and ${unixTimestamp2} are ${result ? 'not ' : ''}same date`);
 	return result;
 }
