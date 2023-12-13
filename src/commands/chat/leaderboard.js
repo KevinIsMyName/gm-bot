@@ -24,7 +24,13 @@ function formatLeaderboard(streakCounterRows) {
 	let i = 1;
 	const prevStreak = { rank: i, numOfDays: null };
 	streakCounterRows.forEach(row => {
-		response += `${streakToEmoji.convertStreakStatusToEmoji(row)}`;
+		if (i === 1) {
+			response += '👑';
+		} else {
+			response += `${streakToEmoji.convertStreakStatusToEmoji(row)}`;
+		}
+
+
 		if (prevStreak.numOfDays === row.numberOfDays) {
 			response += `\` ${String(prevStreak.rank).padStart(numDigits, ' ')} |\` `;
 		} else {
