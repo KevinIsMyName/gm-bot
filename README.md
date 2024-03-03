@@ -1,6 +1,6 @@
 # gm-bot
 
-> A Discord bot that gives users to start streaks by sending messages like "good morning"
+> A Discord bot that allows users to start streaks by sending messages like "good morning"
 
 ## Installation
 
